@@ -1,0 +1,22 @@
+:root {
+  color: #151515;
+  background:
+    linear-gradient(90deg, rgba(21, 21, 21, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(21, 21, 21, 0.05) 1px, transparent 1px),
+    #efe6d6;
+  background-size: 36px 36px;
+  font-family: 'Trebuchet MS', Verdana, sans-serif;
+  font-synthesis: none;
+  letter-spacing: 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
