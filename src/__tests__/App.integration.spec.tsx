@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from '../App'
@@ -23,6 +23,7 @@ class QuietAudioContext {
 
 describe('App', () => {
   beforeEach(() => {
+    vi.unstubAllGlobals()
     window.localStorage.clear()
   })
 
@@ -50,8 +51,18 @@ describe('App', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /warn/i }))
 
-    expect(screen.getByText(/"warn"/)).toBeInTheDocument()
-    vi.unstubAllGlobals()
+    expect(await screen.findByText(/"warn"/)).toBeInTheDocument()
+  })
+
+  it('marks the active rule with a decision animation before saving', async () => {
+    vi.stubGlobal('AudioContext', QuietAudioContext)
+    render(<App />)
+
+    await userEvent.click(screen.getByRole('button', { name: /error/i }))
+
+    expect(document.querySelector('.rule-frame.is-exiting-error')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Error' })).toHaveClass('is-selected-decision')
+    await waitFor(() => expect(screen.getByText(/"error"/)).toBeInTheDocument())
   })
 
   it('hides and restores the generated output panel', async () => {

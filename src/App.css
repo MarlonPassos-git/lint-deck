@@ -1,4 +1,6 @@
 .app-shell {
+  --motion-snap: cubic-bezier(0.2, 0.85, 0.18, 1);
+  --motion-swipe: cubic-bezier(0.16, 1, 0.3, 1);
   min-height: 100svh;
   overflow-x: hidden;
   padding: 18px;
@@ -38,8 +40,9 @@
   min-height: 24px;
   padding: 4px 7px;
   transition:
-    box-shadow 200ms ease-in-out,
-    transform 200ms ease-in-out;
+    background-color 180ms ease,
+    box-shadow 240ms var(--motion-snap),
+    transform 240ms var(--motion-snap);
 }
 
 .category-filter label:has(input:focus-visible),
@@ -128,7 +131,7 @@
 .progress-track div {
   background: #d33b53;
   height: 100%;
-  transition: width 220ms ease;
+  transition: width 340ms var(--motion-snap);
 }
 
 .workspace {
@@ -138,6 +141,7 @@
   grid-template-columns: minmax(240px, 0.22fr) minmax(0, 1fr) minmax(300px, 0.28fr);
   margin: 0 auto;
   max-width: 2200px;
+  transition: grid-template-columns 360ms var(--motion-snap);
   width: 100%;
 }
 
@@ -160,6 +164,14 @@
   contain: layout paint;
   min-height: min(800px, calc(100svh - 92px));
   padding: 18px;
+  transform-origin: center left;
+  transition:
+    opacity 260ms var(--motion-snap),
+    transform 360ms var(--motion-snap);
+}
+
+.output-panel {
+  transform-origin: center right;
 }
 
 .control-panel h2,
@@ -200,8 +212,9 @@ button {
   justify-content: center;
   min-height: 44px;
   transition:
-    box-shadow 200ms ease-in-out,
-    transform 200ms ease-in-out;
+    filter 180ms ease,
+    box-shadow 240ms var(--motion-snap),
+    transform 240ms var(--motion-snap);
 }
 
 button:focus-visible,
@@ -262,10 +275,32 @@ button:disabled {
   position: absolute;
   transform: rotate(1deg) scale(0.98);
   transition:
-    opacity 220ms ease,
-    transform 220ms ease;
+    opacity 280ms var(--motion-swipe),
+    transform 280ms var(--motion-swipe);
   visibility: hidden;
   will-change: opacity, transform;
+}
+
+.rule-frame::after {
+  background: #fffdf7;
+  border: 2px solid #151515;
+  box-shadow: 5px 5px 0 #151515;
+  color: #151515;
+  content: attr(data-decision-label);
+  font:
+    800 34px / 1 "Trebuchet MS",
+    sans-serif;
+  left: 50%;
+  opacity: 0;
+  padding: 10px 16px;
+  pointer-events: none;
+  position: absolute;
+  top: 84px;
+  transform: translate(-50%, -10px) rotate(-4deg) scale(0.88);
+  transition:
+    opacity 140ms ease,
+    transform 220ms var(--motion-snap);
+  z-index: 6;
 }
 
 .rule-frame.is-active {
@@ -274,6 +309,28 @@ button:disabled {
   transform: rotate(0deg) scale(1);
   visibility: visible;
   z-index: 3;
+}
+
+.rule-frame.is-exiting {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rule-frame.is-exiting::after {
+  opacity: 1;
+  transform: translate(-50%, 0) rotate(-4deg) scale(1);
+}
+
+.rule-frame.is-exiting-ignored {
+  transform: translateX(-36%) translateY(18px) rotate(-7deg) scale(0.94);
+}
+
+.rule-frame.is-exiting-warn {
+  transform: translateY(-32px) rotate(-1deg) scale(0.96);
+}
+
+.rule-frame.is-exiting-error {
+  transform: translateX(36%) translateY(18px) rotate(7deg) scale(0.94);
 }
 
 .docs-frame {
@@ -344,11 +401,41 @@ button:disabled {
   padding: 5px;
   position: absolute;
   right: 10px;
+  transition:
+    transform 260ms var(--motion-snap),
+    background-color 180ms ease;
   z-index: 5;
 }
 
 .decision-bar button {
   min-height: 36px;
+  position: relative;
+}
+
+.decision-bar button::after {
+  background: #151515;
+  bottom: -6px;
+  content: "";
+  height: 3px;
+  left: 50%;
+  opacity: 0;
+  position: absolute;
+  transform: translateX(-50%) scaleX(0.25);
+  transition:
+    opacity 160ms ease,
+    transform 220ms var(--motion-snap);
+  width: 44%;
+}
+
+.decision-bar button.is-selected-decision {
+  box-shadow: 3px 3px 0 #151515;
+  filter: saturate(1.18);
+  transform: translate(-4px, -4px) rotate(-1deg);
+}
+
+.decision-bar button.is-selected-decision::after {
+  opacity: 1;
+  transform: translateX(-50%) scaleX(1);
 }
 
 .ignore-button,
@@ -400,6 +487,11 @@ button:disabled {
   min-height: min(800px, calc(100svh - 92px));
   padding: 10px;
   text-orientation: mixed;
+  transform-origin: center;
+  transition:
+    background-color 180ms ease,
+    box-shadow 240ms var(--motion-snap),
+    transform 320ms var(--motion-snap);
   writing-mode: vertical-rl;
 }
 
@@ -438,6 +530,8 @@ button:disabled {
   gap: 14px;
   max-width: 420px;
   padding: 20px;
+  transform: translateY(0);
+  animation: dialog-pop 180ms var(--motion-snap);
   width: 100%;
 }
 
@@ -457,6 +551,38 @@ button:disabled {
   display: grid;
   gap: 10px;
   grid-template-columns: 1fr 1fr;
+}
+
+@keyframes dialog-pop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .category-filter label,
+  .progress-track div,
+  .workspace,
+  .control-panel,
+  .output-panel,
+  button,
+  .rule-frame,
+  .rule-frame::after,
+  .decision-bar,
+  .decision-bar button::after,
+  .show-panel-button {
+    transition: none;
+  }
+
+  .reset-dialog {
+    animation: none;
+  }
 }
 
 @media (max-width: 1180px) {

@@ -35,6 +35,7 @@ function App() {
   const [importText, setImportText] = useState(snapshot.baseConfigText)
   const [errorText, setErrorText] = useState('')
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)
+  const [outgoingDecision, setOutgoingDecision] = useState<RuleChoice['decision'] | null>(null)
   const isInputVisible = snapshot.panels?.inputVisible ?? true
   const isOutputVisible = snapshot.panels?.outputVisible ?? true
   const selectedCategories = useMemo(
@@ -73,13 +74,19 @@ function App() {
   }
 
   const chooseRule = (decision: RuleChoice['decision']) => {
-    if (!activeRule) return
+    if (!activeRule || outgoingDecision) return
     playClickTone(decision)
+    setOutgoingDecision(decision)
+    window.setTimeout(() => saveRuleDecision(activeRule, decision), 280)
+  }
+
+  const saveRuleDecision = (rule: BiomeRule, decision: RuleChoice['decision']) => {
     storeSnapshot({
       ...snapshot,
-      choices: appendRuleChoice(snapshot.choices, activeRule, decision),
+      choices: appendRuleChoice(snapshot.choices, rule, decision),
       currentIndex: snapshot.currentIndex + 1,
     })
+    setOutgoingDecision(null)
   }
 
   const resetReview = () => {
@@ -154,6 +161,7 @@ function App() {
         <RuleStage
           activeRule={activeRule}
           hasSelectedCategory={hasSelectedCategory}
+          outgoingDecision={outgoingDecision}
           rules={getVisibleRuleWindow(pendingRules, 0)}
           onChoose={chooseRule}
         />
@@ -325,6 +333,7 @@ function ImportPanel(props: {
 function RuleStage(props: {
   activeRule?: BiomeRule
   hasSelectedCategory: boolean
+  outgoingDecision: RuleChoice['decision'] | null
   rules: BiomeRule[]
   onChoose: (decision: RuleChoice['decision']) => void
 }) {
@@ -335,17 +344,33 @@ function RuleStage(props: {
     <section className="rule-stage" aria-live="polite">
       <div className="iframe-stack">
         {props.rules.map((rule, index) => (
-          <RuleFrame key={`${rule.group}/${rule.name}`} isActive={index === 0} rule={rule} />
+          <RuleFrame
+            key={`${rule.group}/${rule.name}`}
+            decision={index === 0 ? props.outgoingDecision : null}
+            isActive={index === 0}
+            rule={rule}
+          />
         ))}
-        <RuleActions onChoose={props.onChoose} />
+        <RuleActions outgoingDecision={props.outgoingDecision} onChoose={props.onChoose} />
       </div>
     </section>
   )
 }
 
-function RuleFrame({ isActive, rule }: { isActive: boolean; rule: BiomeRule }) {
+function RuleFrame({
+  decision,
+  isActive,
+  rule,
+}: {
+  decision: RuleChoice['decision'] | null
+  isActive: boolean
+  rule: BiomeRule
+}) {
   return (
-    <article className={`rule-frame ${isActive ? 'is-active' : ''}`}>
+    <article
+      className={getRuleFrameClassName(isActive, decision)}
+      data-decision-label={decision ? getDecisionLabel(decision) : undefined}
+    >
       <div className="rule-meta">
         <div>
           <span>{rule.group}</span>
@@ -364,16 +389,37 @@ function RuleFrame({ isActive, rule }: { isActive: boolean; rule: BiomeRule }) {
   )
 }
 
-function RuleActions({ onChoose }: { onChoose: (decision: RuleChoice['decision']) => void }) {
+function RuleActions({
+  outgoingDecision,
+  onChoose,
+}: {
+  outgoingDecision: RuleChoice['decision'] | null
+  onChoose: (decision: RuleChoice['decision']) => void
+}) {
   return (
     <nav className="decision-bar" aria-label="Rule decisions">
-      <button type="button" className="ignore-button" onClick={() => onChoose('ignored')}>
+      <button
+        type="button"
+        className={getDecisionButtonClassName('ignore-button', outgoingDecision, 'ignored')}
+        disabled={Boolean(outgoingDecision)}
+        onClick={() => onChoose('ignored')}
+      >
         <X size={20} /> Ignore
       </button>
-      <button type="button" className="warn-button" onClick={() => onChoose('warn')}>
+      <button
+        type="button"
+        className={getDecisionButtonClassName('warn-button', outgoingDecision, 'warn')}
+        disabled={Boolean(outgoingDecision)}
+        onClick={() => onChoose('warn')}
+      >
         <AlertTriangle size={20} /> Warn
       </button>
-      <button type="button" className="error-button" onClick={() => onChoose('error')}>
+      <button
+        type="button"
+        className={getDecisionButtonClassName('error-button', outgoingDecision, 'error')}
+        disabled={Boolean(outgoingDecision)}
+        onClick={() => onChoose('error')}
+      >
         <ShieldCheck size={20} /> Error
       </button>
     </nav>
@@ -457,6 +503,32 @@ function getWorkspaceClassName(isInputVisible: boolean, isOutputVisible: boolean
   ]
     .filter(Boolean)
     .join(' ')
+}
+
+function getRuleFrameClassName(isActive: boolean, decision: RuleChoice['decision'] | null) {
+  return [
+    'rule-frame',
+    isActive ? 'is-active' : '',
+    decision ? 'is-exiting' : '',
+    decision ? `is-exiting-${decision}` : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+}
+
+function getDecisionButtonClassName(
+  baseClassName: string,
+  outgoingDecision: RuleChoice['decision'] | null,
+  decision: RuleChoice['decision'],
+) {
+  return [baseClassName, outgoingDecision === decision ? 'is-selected-decision' : '']
+    .filter(Boolean)
+    .join(' ')
+}
+
+function getDecisionLabel(decision: RuleChoice['decision']) {
+  if (decision === 'ignored') return 'IGNORE'
+  return decision.toUpperCase()
 }
 
 function createInitialSnapshot(): ReviewSnapshot {
