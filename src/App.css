@@ -32,7 +32,9 @@
   box-shadow: 2px 2px 0 #151515;
   cursor: pointer;
   display: inline-flex;
-  font: 800 11px/1 'Trebuchet MS', sans-serif;
+  font:
+    800 11px / 1 "Trebuchet MS",
+    sans-serif;
   gap: 5px;
   min-height: 24px;
   padding: 4px 7px;
@@ -54,7 +56,7 @@
 
 .review-header h1 {
   color: #151515;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(24px, 2.3vw, 34px);
   line-height: 1;
   margin: 0;
@@ -70,7 +72,9 @@
 
 .progress-block small {
   color: #4c463d;
-  font: 800 12px/1 'Trebuchet MS', sans-serif;
+  font:
+    800 12px / 1 "Trebuchet MS",
+    sans-serif;
 }
 
 .progress-track {
@@ -119,7 +123,7 @@
 .output-panel h2,
 .finished-stage h2 {
   color: #151515;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 24px;
   line-height: 1.05;
   margin: 10px 0;
@@ -130,7 +134,10 @@ textarea {
   border: 1px solid #151515;
   box-sizing: border-box;
   color: #151515;
-  font: 13px/1.45 'Cascadia Code', Consolas, monospace;
+  font:
+    13px / 1.45 "Cascadia Code",
+    Consolas,
+    monospace;
   height: 390px;
   margin: 10px 0;
   padding: 12px;
@@ -144,7 +151,9 @@ button {
   box-shadow: 3px 3px 0 #151515;
   cursor: pointer;
   display: inline-flex;
-  font: 800 14px/1.1 'Trebuchet MS', sans-serif;
+  font:
+    800 14px / 1.1 "Trebuchet MS",
+    sans-serif;
   gap: 8px;
   justify-content: center;
   min-height: 44px;
@@ -305,7 +314,10 @@ button:disabled {
 .output-panel pre {
   background: #151515;
   color: #f9f1dd;
-  font: 12px/1.5 'Cascadia Code', Consolas, monospace;
+  font:
+    12px / 1.5 "Cascadia Code",
+    Consolas,
+    monospace;
   height: min(640px, calc(100svh - 255px));
   margin: 16px 0 0;
   overflow: auto;
@@ -379,7 +391,7 @@ button:disabled {
 
 .reset-dialog h2 {
   color: #151515;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 28px;
   margin: 0;
 }

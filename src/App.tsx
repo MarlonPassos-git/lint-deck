@@ -8,14 +8,20 @@ import {
   getReviewableRules,
   parseBiomeConfig,
 } from './domain/configuration'
-import { filterRulesByCategories, ruleCategories } from './domain/ruleCategories'
 import {
   appendRuleChoice,
   getCompletedRuleCount,
   getProgressPercent,
   getVisibleRuleWindow,
 } from './domain/reviewState'
-import type { BiomeConfig, BiomeRule, RuleCategory, RuleChoice, ReviewSnapshot } from './domain/types'
+import { filterRulesByCategories, ruleCategories } from './domain/ruleCategories'
+import type {
+  BiomeConfig,
+  BiomeRule,
+  ReviewSnapshot,
+  RuleCategory,
+  RuleChoice,
+} from './domain/types'
 import {
   clearReviewSnapshot,
   loadReviewSnapshot,
@@ -46,11 +52,7 @@ function App() {
   )
   const activeRule = pendingRules[0]
   const outputText = formatBiomeConfig(buildBiomeConfig(baseConfig, snapshot.choices))
-  const completedRules = getCompletedRuleCount(
-    filteredRules.length,
-    pendingRules.length,
-    0,
-  )
+  const completedRules = getCompletedRuleCount(filteredRules.length, pendingRules.length, 0)
   const progress = getProgressPercent(filteredRules.length, completedRules)
 
   const startReview = () => {
@@ -87,7 +89,9 @@ function App() {
     setSnapshot(createInitialSnapshot())
   }
 
-  const updatePanelVisibility = (visibilityPatch: Partial<NonNullable<ReviewSnapshot['panels']>>) => {
+  const updatePanelVisibility = (
+    visibilityPatch: Partial<NonNullable<ReviewSnapshot['panels']>>,
+  ) => {
     storeSnapshot({
       ...snapshot,
       panels: {
@@ -124,7 +128,10 @@ function App() {
         onCategoryToggle={toggleCategory}
         onResetRequest={() => setIsResetDialogOpen(true)}
       />
-      <section className={getWorkspaceClassName(isInputVisible, isOutputVisible)} aria-label="Rule review workspace">
+      <section
+        className={getWorkspaceClassName(isInputVisible, isOutputVisible)}
+        aria-label="Rule review workspace"
+      >
         {isInputVisible ? (
           <ImportPanel
             errorText={errorText}
@@ -164,10 +171,7 @@ function App() {
         )}
       </section>
       {isResetDialogOpen ? (
-        <ResetDialog
-          onCancel={() => setIsResetDialogOpen(false)}
-          onConfirm={resetReview}
-        />
+        <ResetDialog onCancel={() => setIsResetDialogOpen(false)} onConfirm={resetReview} />
       ) : null}
     </main>
   )
@@ -194,10 +198,7 @@ function ReviewHeader({
         <p className="eyebrow">Biome rule deck</p>
         <h1>Rule config deck</h1>
       </div>
-      <CategoryFilter
-        selectedCategories={selectedCategories}
-        onCategoryToggle={onCategoryToggle}
-      />
+      <CategoryFilter selectedCategories={selectedCategories} onCategoryToggle={onCategoryToggle} />
       <div className="progress-block">
         <span>{progress}%</span>
         <small>
@@ -206,7 +207,12 @@ function ReviewHeader({
         <div className="progress-track">
           <div style={{ width: `${progress}%` }} />
         </div>
-        <button type="button" className="icon-button" onClick={onResetRequest} aria-label="Reset review">
+        <button
+          type="button"
+          className="icon-button"
+          onClick={onResetRequest}
+          aria-label="Reset review"
+        >
           <RotateCcw size={18} />
         </button>
       </div>
@@ -214,16 +220,15 @@ function ReviewHeader({
   )
 }
 
-function ResetDialog({
-  onCancel,
-  onConfirm,
-}: {
-  onCancel: () => void
-  onConfirm: () => void
-}) {
+function ResetDialog({ onCancel, onConfirm }: { onCancel: () => void; onConfirm: () => void }) {
   return (
     <div className="dialog-backdrop" role="presentation">
-      <section className="reset-dialog" role="dialog" aria-modal="true" aria-labelledby="reset-title">
+      <section
+        className="reset-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reset-title"
+      >
         <h2 id="reset-title">Reset review?</h2>
         <p>This clears imported config, decisions, progress, filters, and hidden panel state.</p>
         <div className="dialog-actions">
@@ -276,7 +281,12 @@ function ImportPanel(props: {
           <FileText size={22} />
           <h2>Base file</h2>
         </div>
-        <button type="button" className="small-icon-button" onClick={props.onHide} aria-label="Hide base file">
+        <button
+          type="button"
+          className="small-icon-button"
+          onClick={props.onHide}
+          aria-label="Hide base file"
+        >
           <EyeOff size={17} />
         </button>
       </div>
@@ -323,7 +333,12 @@ function RuleFrame({ isActive, rule }: { isActive: boolean; rule: BiomeRule }) {
         </div>
         <p>{rule.summary}</p>
       </div>
-      <iframe className="docs-frame" title={`${rule.name} documentation`} src={rule.url} loading="eager" />
+      <iframe
+        className="docs-frame"
+        title={`${rule.name} documentation`}
+        src={rule.url}
+        loading="eager"
+      />
     </article>
   )
 }
@@ -357,7 +372,12 @@ function OutputPanel({
     <aside className="output-panel">
       <div className="panel-title-row">
         <h2>Generated biome.json</h2>
-        <button type="button" className="small-icon-button" onClick={onHide} aria-label="Hide output">
+        <button
+          type="button"
+          className="small-icon-button"
+          onClick={onHide}
+          aria-label="Hide output"
+        >
           <EyeOff size={17} />
         </button>
       </div>

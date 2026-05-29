@@ -1,7 +1,5 @@
 import { writeFileSync } from 'node:fs'
-import schema from '../node_modules/@biomejs/biome/configuration_schema.json' with {
-  type: 'json',
-}
+import schema from '../node_modules/@biomejs/biome/configuration_schema.json' with { type: 'json' }
 
 const ruleGroups = [
   'a11y',

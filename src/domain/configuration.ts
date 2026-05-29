@@ -22,7 +22,8 @@ export function extractConfiguredRuleKeys(config: BiomeConfig): Set<string> {
 
 export function buildBiomeConfig(config: BiomeConfig, choices: RuleChoice[]) {
   const nextConfig = structuredClone(config)
-  nextConfig.$schema = typeof nextConfig.$schema === 'string' ? nextConfig.$schema : BIOME_SCHEMA_URL
+  nextConfig.$schema =
+    typeof nextConfig.$schema === 'string' ? nextConfig.$schema : BIOME_SCHEMA_URL
   nextConfig.linter = { ...(nextConfig.linter ?? {}) }
   nextConfig.linter.rules = { ...(nextConfig.linter.rules ?? {}) }
 
@@ -45,11 +46,7 @@ export function getMissingRules(rules: BiomeRule[], config: BiomeConfig) {
   return rules.filter((rule) => !configuredKeys.has(toRuleKey(rule)))
 }
 
-export function getReviewableRules(
-  rules: BiomeRule[],
-  config: BiomeConfig,
-  choices: RuleChoice[],
-) {
+export function getReviewableRules(rules: BiomeRule[], config: BiomeConfig, choices: RuleChoice[]) {
   const configuredKeys = extractConfiguredRuleKeys(config)
   const decidedKeys = new Set(choices.map((choice) => choice.ruleKey))
   return rules.filter((rule) => {

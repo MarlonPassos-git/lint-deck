@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { clearReviewSnapshot, loadReviewSnapshot, saveReviewSnapshot } from '../localReviewStore'
 import type { ReviewSnapshot } from '../../domain/types'
+import { clearReviewSnapshot, loadReviewSnapshot, saveReviewSnapshot } from '../localReviewStore'
 
 class MemoryReviewStorage implements Storage {
   private readonly values = new Map<string, string>()

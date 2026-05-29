@@ -10,13 +10,7 @@ export type BiomeRule = {
   url: string
 }
 
-export type RuleCategory =
-  | 'JavaScript'
-  | 'CSS'
-  | 'JSON'
-  | 'GraphQL'
-  | 'HTML/ARIA'
-  | 'General'
+export type RuleCategory = 'JavaScript' | 'CSS' | 'JSON' | 'GraphQL' | 'HTML/ARIA' | 'General'
 
 export type RuleChoice = {
   ruleKey: string

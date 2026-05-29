@@ -1,5 +1,5 @@
-import type { BiomeRule, RuleChoice } from './types'
 import { toRuleKey } from './configuration'
+import type { BiomeRule, RuleChoice } from './types'
 
 export function getVisibleRuleWindow(rules: BiomeRule[], currentIndex: number) {
   return rules.slice(currentIndex, currentIndex + 3)
@@ -10,7 +10,11 @@ export function getProgressPercent(totalRules: number, currentIndex: number) {
   return Math.round((Math.min(currentIndex, totalRules) / totalRules) * 100)
 }
 
-export function getCompletedRuleCount(totalRules: number, pendingRules: number, currentIndex: number) {
+export function getCompletedRuleCount(
+  totalRules: number,
+  pendingRules: number,
+  currentIndex: number,
+) {
   const configuredRules = Math.max(totalRules - pendingRules, 0)
   return Math.min(configuredRules + currentIndex, totalRules)
 }
