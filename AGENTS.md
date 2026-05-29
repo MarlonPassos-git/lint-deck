@@ -1,0 +1,179 @@
+# AGENTS.md
+
+## Project
+
+Desktop-only React SPA for reviewing Biome linter rules and producing a custom `biome.json`.
+
+Core user flow:
+- User can paste an existing Biome config in the base file panel.
+- Explicitly configured rules in that config are skipped.
+- User reviews remaining rules as a deck.
+- Three rule documentation iframes are kept mounted at a time.
+- Decisions are `ignored`, `warn`, or `error`.
+- Generated `biome.json` is shown in the output panel.
+- Progress counts imported explicit rules plus decisions made in the app.
+- Side panel visibility, category filters, imported config, current progress, and decisions persist in `localStorage`.
+
+## Stack
+
+- React 19
+- Vite 8
+- TypeScript 6
+- Vitest + Testing Library
+- ESLint
+- `@biomejs/biome` is used as the source for the official configuration schema.
+- `lucide-react` provides icons.
+
+## Commands
+
+- Install: `npm install`
+- Run dev server: `npm run dev -- --host 127.0.0.1`
+- Test: `npm run test`
+- Lint: `npm run lint`
+- Build: `npm run build`
+- Regenerate rule catalog: `node scripts/generate-biome-rules.mjs`
+
+Before finishing behavior changes, run:
+
+```powershell
+npm run test
+npm run lint
+npm run build
+```
+
+## Important Files
+
+- `src/App.tsx`: main SPA UI, review flow, category filter, panel visibility, reset confirmation.
+- `src/App.css`: all layout and visual styling.
+- `src/domain/biomeRules.ts`: generated rule catalog. Do not edit by hand unless generation is intentionally bypassed.
+- `src/domain/configuration.ts`: Biome config parsing, rule key extraction, output generation, reviewable-rule filtering.
+- `src/domain/ruleCategories.ts`: local category classifier for JavaScript, CSS, JSON, GraphQL, HTML/ARIA, and General.
+- `src/domain/reviewState.ts`: progress/window/choice helpers.
+- `src/storage/localReviewStore.ts`: `localStorage` persistence.
+- `scripts/generate-biome-rules.mjs`: builds `biomeRules.ts` from `node_modules/@biomejs/biome/configuration_schema.json`.
+
+## Biome Rule Catalog
+
+Rules are generated from the installed Biome package schema, currently `@biomejs/biome 2.4.16`.
+
+Rule docs URLs come from schema descriptions and point to:
+
+```text
+https://biomejs.dev/linter/rules/{rule-slug}
+```
+
+Do not crawler-scrape the docs unless schema generation stops being viable. Prefer the official schema because it is stable, versioned with the package, and includes rule descriptions plus URLs.
+
+## App Behavior
+
+- Imported explicit rules are treated as complete and skipped.
+- `recommended: true` is not expanded into completed rules. Only explicit rules count as configured.
+- Category filters affect the review deck and progress denominator.
+- Already-decided rules do not reappear when category filters change.
+- Reset is destructive and must open a confirmation modal with `Cancel` and `Reset everything`.
+- Do not require typing text for reset confirmation.
+- The iframe must render normally. Do not crop, translate, or otherwise mutate the cross-origin Biome docs iframe; prior crop attempts made navigation feel broken.
+- Browser security prevents editing DOM inside the Biome docs iframe because it is cross-origin.
+- Decision buttons float over the bottom of the card to preserve iframe height.
+- `Error` button should not be green. Current semantics: Ignore neutral, Warn amber, Error red.
+
+## Persistence
+
+Storage key:
+
+```text
+biome-rule-swipe:v1
+```
+
+Snapshot shape includes:
+- `baseConfigText`
+- `choices`
+- `currentIndex`
+- `panels.inputVisible`
+- `panels.outputVisible`
+- `filters.selectedCategories`
+
+Handle corrupt stored JSON by clearing the key and returning `null`.
+
+## Code Style
+
+- Functions: 4-20 lines. Split if longer.
+- One thing per function, one responsibility per module.
+- Names must be specific and unique. Avoid `data`, `handler`, `Manager`.
+- Prefer names that return fewer than 5 grep hits.
+- No code duplication. Extract shared logic into a function/module.
+- Prefer early returns over nested ifs.
+- Maximum 2 levels of indentation.
+- Exception messages must include offending value and expected shape.
+- Follow lint tools and style guides.
+
+## Comments
+
+- Keep existing comments when refactoring.
+- Write why, not what.
+- Public functions need docstrings only when they become a public API surface; include intent and one usage example.
+- Reference issue numbers or commit SHAs when code exists because of a specific bug or upstream constraint.
+
+## Tests
+
+- Every new function gets a test.
+- Bug fixes get regression tests.
+- Any feature or adjustment must create/update tests unless change is only `*.md`, `*.json`, or under `scripts/**/*`.
+- Use named fake classes for external I/O mocks, not inline stubs.
+- Tests live in `__tests__` folders.
+- Test files use `{file_name}.{unit|integration|e2e}.spec.{extension}`.
+- Tests should be fast, independent, repeatable, self-validating, timely.
+
+## Dependencies
+
+- Inject dependencies through constructor/parameter when practical.
+- Wrap third-party libraries behind project-owned interfaces for shared/domain logic.
+- UI-only libraries such as `lucide-react` may be imported directly in components.
+
+## Structure
+
+- Follow Vite/React conventions.
+- Prefer small focused modules over large god files.
+- Keep domain helpers under `src/domain`.
+- Keep persistence under `src/storage`.
+- Keep test setup under `src/test`.
+
+## Formatting
+
+- Use project tooling.
+- Do not discuss style beyond lint/test/build output.
+
+## Logging
+
+- Structured JSON for debugging/observability logs.
+- Plain text only for user-facing CLI output.
+
+## Browser QA
+
+When changing layout or interaction, verify in the in-app browser at:
+
+```text
+http://127.0.0.1:5173
+```
+
+Useful checks:
+- App loads without console errors.
+- There are 3 `iframe.docs-frame` elements during active review.
+- Reset modal appears before destructive reset.
+- Side panel hide/show state survives reload.
+- Category filters survive reload and update progress.
+- No unwanted horizontal overflow.
+
+## Git
+
+Use `rtk git ...` for git commands when committing from Codex.
+
+Commit messages use Conventional Commits:
+- `feat`
+- `fix`
+- `test`
+- `build`
+- `docs`
+- `refactor`
+- `chore`
+
