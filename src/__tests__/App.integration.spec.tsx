@@ -73,6 +73,17 @@ describe('App', () => {
     expect(await screen.findByText(/"warn"/)).toBeInTheDocument()
   })
 
+  it('saves info and off decisions into the generated config', async () => {
+    vi.stubGlobal('AudioContext', QuietAudioContext)
+    render(<App />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Info' }))
+    await waitFor(() => expect(screen.getByText(/"info"/)).toBeInTheDocument())
+    await userEvent.click(screen.getByRole('button', { name: 'Off' }))
+
+    expect(await screen.findByText(/"off"/)).toBeInTheDocument()
+  })
+
   it('advances prefetched documentation after a decision', async () => {
     vi.stubGlobal('AudioContext', QuietAudioContext)
     render(<App />)
@@ -206,7 +217,8 @@ describe('App', () => {
   it('uses semantic decision classes from the design system', () => {
     render(<App />)
 
-    expect(screen.getByRole('button', { name: 'Ignore' })).toHaveClass('ignore-button')
+    expect(screen.getByRole('button', { name: 'Off' })).toHaveClass('off-button')
+    expect(screen.getByRole('button', { name: 'Info' })).toHaveClass('info-button')
     expect(screen.getByRole('button', { name: 'Warn' })).toHaveClass('warn-button')
     expect(screen.getByRole('button', { name: 'Error' })).toHaveClass('error-button')
   })

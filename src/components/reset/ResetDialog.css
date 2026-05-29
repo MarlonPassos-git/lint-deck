@@ -1,0 +1,52 @@
+.dialog-backdrop {
+  align-items: center;
+  background: rgba(21, 21, 21, 0.42);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 20px;
+  position: fixed;
+  z-index: 20;
+}
+
+.reset-dialog {
+  background: #fffdf7;
+  border: 1px solid #151515;
+  display: grid;
+  gap: 14px;
+  max-width: 420px;
+  padding: 20px;
+  transform: translateY(0);
+  animation: dialog-pop 180ms var(--motion-snap);
+  width: 100%;
+}
+
+.reset-dialog h2 {
+  color: #151515;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  margin: 0;
+}
+
+.reset-dialog p {
+  color: #4c463d;
+  margin: 0;
+}
+
+.dialog-actions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+
+@keyframes dialog-pop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

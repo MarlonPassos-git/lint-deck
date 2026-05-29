@@ -1,0 +1,49 @@
+.workspace {
+  align-items: stretch;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(240px, 0.22fr) minmax(0, 1fr) minmax(300px, 0.28fr);
+  margin: 0 auto;
+  max-width: 2200px;
+  transition: none;
+  width: 100%;
+}
+
+.workspace.is-output-hidden {
+  grid-template-columns: minmax(240px, 0.22fr) minmax(0, 1fr) 56px;
+}
+
+.workspace.is-input-hidden {
+  grid-template-columns: 56px minmax(0, 1fr) minmax(300px, 0.28fr);
+}
+
+.workspace.is-input-hidden.is-output-hidden {
+  grid-template-columns: 56px minmax(0, 1fr) 56px;
+}
+
+.panel-visibility-slot {
+  min-width: 0;
+}
+
+.panel-visibility-content {
+  height: 100%;
+}
+
+.panel-visibility-content[hidden],
+.show-panel-button[hidden] {
+  display: none;
+}
+
+.show-panel-button {
+  align-self: start;
+  background: #cfe4f4;
+  min-height: min(800px, calc(100svh - 92px));
+  padding: 10px;
+  text-orientation: mixed;
+  transform-origin: center;
+  transition:
+    background-color 180ms ease,
+    box-shadow 240ms var(--motion-snap),
+    transform 320ms var(--motion-snap);
+  writing-mode: vertical-rl;
+}

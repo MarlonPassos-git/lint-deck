@@ -11,7 +11,7 @@ colors:
   canvas: "#f4efe3"
   warning: "#f4c542"
   danger: "#e85d5d"
-  ignore: "#d6d1db"
+  off: "#d6d1db"
   reveal: "#cfe4f4"
   code-surface: "#151515"
   code-text: "#f9f1dd"
@@ -115,8 +115,8 @@ components:
     rounded: "{rounded.none}"
     padding: 7px
     height: 24px
-  decision-ignore:
-    backgroundColor: "{colors.ignore}"
+  decision-off:
+    backgroundColor: "{colors.off}"
     textColor: "{colors.primary}"
     typography: "{typography.control-md}"
     rounded: "{rounded.none}"
@@ -236,7 +236,7 @@ The palette starts from the current app tokens and borrows Gumroad's public neo-
 - **Neutral (#f6f1e8):** Warm panel surface.
 - **Surface (#fffdf7):** Paper-like input, card, and modal surface.
 - **Canvas (#f4efe3):** Page background. Keep it warm and quiet so black borders remain crisp.
-- **Warning/Danger/Ignore/Reveals:** Decision semantics must stay stable: warn is amber, error is red, ignore is neutral-lavender, reveal tabs are light blue.
+- **Warning/Danger/Off/Reveals:** Decision semantics must stay stable: warn is amber, error is red, off is neutral-lavender, reveal tabs are light blue.
 - **Gumroad accent samples:** Pink `#ff90e8`, purple `#90a8ed`, green `#23a094`, orange `#ffc900`, red `#dc341e`, yellow `#f1f333`, violet `#b23386`, gray `#f4f4f0`, and dark gray `#242423` come from the pinned Gumroad stylesheet theme. Use them as reference/accent colors, not as a mandate to recolor every control.
 
 ## Typography
@@ -287,7 +287,7 @@ Gumroad's pinned `components/ui` kit uses a consistent recipe: `border border-bo
 
 **Rule card:** Paper surface, one-pixel black border, larger hard shadow. Keep three docs iframes mounted but only one visible. Never crop, translate, or mutate cross-origin docs.
 
-**Decision bar:** Fixed over the bottom of the rule card. Use three equal-width buttons. Ignore stays neutral, Warn amber, Error red. The Error action must never be green.
+**Decision bar:** Fixed over the bottom of the rule card. Use equal-width buttons. Off stays neutral, Info blue-purple, Warn amber, Error red. The Error action must never be green.
 
 **Buttons:** Square, bold, icon-plus-label where the command benefits from recognition. Primary actions are black with paper text. All buttons use hard shadows and active press movement.
 
@@ -315,7 +315,7 @@ Gumroad's pinned `components/ui` kit uses a consistent recipe: `border border-bo
 
 - Do keep the app dense, readable, and desktop-first.
 - Do use black borders and hard shadows as the main visual grammar.
-- Do preserve semantic color meanings for Ignore, Warn, and Error.
+- Do preserve semantic color meanings for Off, Info, Warn, and Error.
 - Do keep iframe documentation normal and uncropped.
 - Do prefer stable dimensions for panels, buttons, progress tracks, and decision controls.
 - Don't turn this into a Gumroad landing page with oversized hero art.

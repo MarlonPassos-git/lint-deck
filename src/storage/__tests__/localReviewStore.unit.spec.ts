@@ -48,6 +48,21 @@ describe('loadReviewSnapshot', () => {
     expect(loadReviewSnapshot(new MemoryReviewStorage())).toBeNull()
   })
 
+  it('migrates legacy ignored choices to off decisions', () => {
+    const storage = new MemoryReviewStorage()
+    storage.setItem(
+      'biome-rule-swipe:v1',
+      JSON.stringify({
+        ...snapshot,
+        choices: [{ ruleKey: 'style/useConst', decision: 'ignored' }],
+      }),
+    )
+
+    expect(loadReviewSnapshot(storage)?.choices).toEqual([
+      { ruleKey: 'style/useConst', decision: 'off' },
+    ])
+  })
+
   it('removes corrupted snapshots', () => {
     const storage = new MemoryReviewStorage()
     storage.setItem('biome-rule-swipe:v1', '{bad')

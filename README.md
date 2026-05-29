@@ -17,7 +17,7 @@
 
 - Review linter rules with a card/deck workflow.
 - Import an existing `biome.json` and skip explicitly configured rules.
-- Choose `Ignore`, `Warn`, or `Error` for each remaining rule.
+- Choose `Off`, `Info`, `Warn`, or `Error` for each remaining rule.
 - Keep three Biome documentation iframes mounted for faster navigation.
 - Filter the review deck by rule category.
 - Persist imported config, decisions, filters, progress, and panel visibility in `localStorage`.

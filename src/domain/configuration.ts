@@ -28,7 +28,6 @@ export function buildBiomeConfig(config: BiomeConfig, choices: RuleChoice[]) {
   nextConfig.linter.rules = { ...(nextConfig.linter.rules ?? {}) }
 
   for (const choice of choices) {
-    if (choice.decision === 'ignored') continue
     const [group, ruleName] = splitRuleKey(choice.ruleKey)
     const groupRules = getGroupRules(nextConfig, group)
     groupRules[ruleName] = choice.decision

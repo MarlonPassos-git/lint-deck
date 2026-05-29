@@ -49,14 +49,14 @@ describe('extractConfiguredRuleKeys', () => {
 })
 
 describe('buildBiomeConfig', () => {
-  it('adds selected severities and skips ignored rules', () => {
+  it('adds selected Biome decision levels', () => {
     const config = buildBiomeConfig({}, [
-      { ruleKey: 'correctness/noUnusedVariables', decision: 'warn' },
-      { ruleKey: 'style/useConst', decision: 'ignored' },
+      { ruleKey: 'correctness/noUnusedVariables', decision: 'info' },
+      { ruleKey: 'style/useConst', decision: 'off' },
     ])
 
-    expect(config.linter?.rules?.correctness).toEqual({ noUnusedVariables: 'warn' })
-    expect(config.linter?.rules?.style).toBeUndefined()
+    expect(config.linter?.rules?.correctness).toEqual({ noUnusedVariables: 'info' })
+    expect(config.linter?.rules?.style).toEqual({ useConst: 'off' })
   })
 })
 

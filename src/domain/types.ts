@@ -1,6 +1,6 @@
-export type RuleSeverity = 'error' | 'warn'
+export type RuleSeverity = 'error' | 'info' | 'warn'
 
-export type RuleDecision = RuleSeverity | 'ignored'
+export type RuleDecision = RuleSeverity | 'off'
 
 export type BiomeRule = {
   group: string

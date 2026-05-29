@@ -1,0 +1,75 @@
+.control-panel,
+.output-panel {
+  background: #f6f1e8;
+  border: 1px solid #151515;
+  contain: layout paint;
+  min-height: min(800px, calc(100svh - 92px));
+  padding: 18px;
+  transform-origin: center left;
+  transition:
+    opacity 260ms var(--motion-snap),
+    transform 360ms var(--motion-snap);
+}
+
+.output-panel {
+  transform-origin: center right;
+}
+
+.control-panel h2,
+.output-panel h2 {
+  color: #151515;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  line-height: 1.05;
+  margin: 10px 0;
+}
+
+.panel-title-row {
+  align-items: start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+textarea {
+  background: #fffdf7;
+  border: 1px solid #151515;
+  box-sizing: border-box;
+  color: #151515;
+  font:
+    13px / 1.45 "Cascadia Code",
+    Consolas,
+    monospace;
+  height: 390px;
+  margin: 10px 0;
+  padding: 12px;
+  resize: none;
+  width: 100%;
+}
+
+.output-panel p,
+.error-text {
+  color: #4c463d;
+  margin: 0;
+}
+
+.output-panel pre {
+  background: #151515;
+  color: #f9f1dd;
+  font:
+    12px / 1.5 "Cascadia Code",
+    Consolas,
+    monospace;
+  height: min(640px, calc(100svh - 255px));
+  margin: 16px 0 0;
+  overflow: auto;
+  padding: 14px;
+  text-align: left;
+}
+
+.error-text {
+  background: #f1c6c2;
+  border: 1px solid #151515;
+  margin-bottom: 10px;
+  padding: 10px;
+}
