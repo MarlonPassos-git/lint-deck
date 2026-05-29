@@ -94,6 +94,7 @@
 }
 
 .workspace {
+  align-items: stretch;
   display: grid;
   gap: 18px;
   grid-template-columns: minmax(240px, 0.22fr) minmax(0, 1fr) minmax(300px, 0.28fr);
@@ -119,6 +120,7 @@
   background: #f6f1e8;
   border: 1px solid #151515;
   box-shadow: 5px 5px 0 #151515;
+  contain: layout paint;
   min-height: min(800px, calc(100svh - 92px));
   padding: 18px;
 }
@@ -199,6 +201,7 @@ button:disabled {
 }
 
 .rule-stage {
+  contain: layout paint;
   min-height: min(800px, calc(100svh - 92px));
   min-width: 0;
 }
@@ -213,23 +216,31 @@ button:disabled {
   background: #fffdf7;
   border: 1px solid #151515;
   box-shadow: 8px 8px 0 #151515;
+  contain: layout paint;
   inset: 0;
   opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
   position: absolute;
   transform: rotate(1deg) scale(0.98);
   transition:
     opacity 220ms ease,
     transform 220ms ease;
+  visibility: hidden;
+  will-change: opacity, transform;
 }
 
 .rule-frame.is-active {
   opacity: 1;
+  pointer-events: auto;
   transform: rotate(0deg) scale(1);
+  visibility: visible;
   z-index: 3;
 }
 
 .docs-frame {
   border: 0;
+  display: block;
   height: calc(100% - 62px);
   width: 100%;
 }
@@ -288,6 +299,7 @@ button:disabled {
   border: 1px solid #151515;
   bottom: 8px;
   box-shadow: 3px 3px 0 #151515;
+  contain: layout paint;
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(3, 1fr);
