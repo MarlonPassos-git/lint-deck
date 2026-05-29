@@ -237,10 +237,10 @@ function ResetDialog({ onCancel, onConfirm }: { onCancel: () => void; onConfirm:
         <h2 id="reset-title">Reset review?</h2>
         <p>This clears imported config, decisions, progress, filters, and hidden panel state.</p>
         <div className="dialog-actions">
-          <button type="button" className="danger-button" onClick={onCancel}>
+          <button type="button" className="secondary-button" onClick={onCancel}>
             Cancel
           </button>
-          <button type="button" className="success-button" onClick={onConfirm}>
+          <button type="button" className="error-button" onClick={onConfirm}>
             Reset everything
           </button>
         </div>
@@ -258,16 +258,25 @@ function CategoryFilter({
 }) {
   return (
     <fieldset className="category-filter" aria-label="Rule categories">
-      {ruleCategories.map((category) => (
-        <label key={category}>
-          <input
-            type="checkbox"
-            checked={selectedCategories.includes(category)}
-            onChange={() => onCategoryToggle(category)}
-          />
-          <span>{category}</span>
-        </label>
-      ))}
+      {ruleCategories.map((category) => {
+        const categoryInputId = `category-${category
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/-$/g, '')}`
+
+        return (
+          <label htmlFor={categoryInputId} key={category}>
+            <input
+              id={categoryInputId}
+              name="rule-category"
+              type="checkbox"
+              checked={selectedCategories.includes(category)}
+              onChange={() => onCategoryToggle(category)}
+            />
+            <span>{category}</span>
+          </label>
+        )
+      })}
     </fieldset>
   )
 }
@@ -348,6 +357,7 @@ function RuleFrame({ isActive, rule }: { isActive: boolean; rule: BiomeRule }) {
         className="docs-frame"
         title={`${rule.name} documentation`}
         src={rule.url}
+        tabIndex={-1}
         loading="eager"
       />
     </article>
@@ -357,13 +367,13 @@ function RuleFrame({ isActive, rule }: { isActive: boolean; rule: BiomeRule }) {
 function RuleActions({ onChoose }: { onChoose: (decision: RuleChoice['decision']) => void }) {
   return (
     <nav className="decision-bar" aria-label="Rule decisions">
-      <button type="button" className="danger-button" onClick={() => onChoose('ignored')}>
+      <button type="button" className="ignore-button" onClick={() => onChoose('ignored')}>
         <X size={20} /> Ignore
       </button>
       <button type="button" className="warn-button" onClick={() => onChoose('warn')}>
         <AlertTriangle size={20} /> Warn
       </button>
-      <button type="button" className="success-button" onClick={() => onChoose('error')}>
+      <button type="button" className="error-button" onClick={() => onChoose('error')}>
         <ShieldCheck size={20} /> Error
       </button>
     </nav>

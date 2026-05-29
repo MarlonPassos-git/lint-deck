@@ -1,9 +1,6 @@
 :root {
   color: #151515;
-  background:
-    linear-gradient(90deg, rgba(21, 21, 21, 0.05) 1px, transparent 1px),
-    linear-gradient(rgba(21, 21, 21, 0.05) 1px, transparent 1px), #efe6d6;
-  background-size: 36px 36px;
+  background: #f4efe3;
   font-family: "Trebuchet MS", Verdana, sans-serif;
   font-synthesis: none;
   letter-spacing: 0;
