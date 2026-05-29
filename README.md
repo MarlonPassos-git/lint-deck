@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="public/favicon.svg" alt="Biome Rule Deck icon" width="96" height="96" />
+  <img src="public/favicon.svg" alt="Lint Deck icon" width="96" height="96" />
 
-  <h1>Biome Rule Deck</h1>
+  <h1>Lint Deck</h1>
 
-  <p>Desktop React SPA for reviewing Biome lint rules and building a custom biome.json.</p>
+  <p>Desktop React SPA for reviewing lint rules and building custom linter configs.</p>
 
   <p>
     <img alt="Version" src="https://img.shields.io/badge/version-0.0.0-111111" />
@@ -15,7 +15,7 @@
 
 ## Features
 
-- Review Biome linter rules with a card/deck workflow.
+- Review linter rules with a card/deck workflow.
 - Import an existing `biome.json` and skip explicitly configured rules.
 - Choose `Ignore`, `Warn`, or `Error` for each remaining rule.
 - Keep three Biome documentation iframes mounted for faster navigation.

@@ -1,8 +1,8 @@
 {
-  "name": "biome-rule-deck",
+  "name": "lint-deck",
   "private": true,
   "version": "0.0.0",
-  "description": "Desktop React SPA for reviewing Biome lint rules and building a custom biome.json.",
+  "description": "Desktop React SPA for reviewing lint rules and building custom linter configs.",
   "license": "UNLICENSED",
   "type": "module",
   "packageManager": "pnpm@10.33.2",
