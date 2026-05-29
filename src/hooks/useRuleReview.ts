@@ -28,6 +28,7 @@ import {
 
 const defaultInput = '{\n  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json"\n}\n'
 const ruleDocPrefetchLimit = 6
+type StoreReviewSnapshot = (nextSnapshot: ReviewSnapshot, shouldSyncImportText?: boolean) => void
 
 export function useRuleReview() {
   const [snapshot, setSnapshot] = useState(() => loadInitialSnapshot())
@@ -92,9 +93,9 @@ function useReviewActions(
   setErrorText: (value: string) => void,
   setOutgoingDecision: (decision: RuleChoice['decision'] | null) => void,
 ) {
-  const storeSnapshot = (nextSnapshot: ReviewSnapshot) => {
+  const storeSnapshot = (nextSnapshot: ReviewSnapshot, shouldSyncImportText = false) => {
     saveReviewSnapshot(window.localStorage, nextSnapshot)
-    setImportText(nextSnapshot.baseConfigText)
+    if (shouldSyncImportText) setImportText(nextSnapshot.baseConfigText)
     setSnapshot(nextSnapshot)
   }
 
@@ -106,7 +107,7 @@ function useReviewActions(
 
 function createReviewActions(
   state: ReturnType<typeof buildReviewState>,
-  storeSnapshot: (nextSnapshot: ReviewSnapshot) => void,
+  storeSnapshot: StoreReviewSnapshot,
   setErrorText: (value: string) => void,
   setOutgoingDecision: (decision: RuleChoice['decision'] | null) => void,
 ) {
@@ -123,7 +124,7 @@ function createReviewActions(
 function chooseRule(
   state: ReturnType<typeof buildReviewState>,
   decision: RuleChoice['decision'],
-  storeSnapshot: (nextSnapshot: ReviewSnapshot) => void,
+  storeSnapshot: StoreReviewSnapshot,
   setOutgoingDecision: (decision: RuleChoice['decision'] | null) => void,
 ) {
   if (!state.activeRule || state.outgoingDecision) return
@@ -176,12 +177,12 @@ function buildReviewState(
 
 function startReview(
   state: ReturnType<typeof buildReviewState>,
-  storeSnapshot: (nextSnapshot: ReviewSnapshot) => void,
+  storeSnapshot: StoreReviewSnapshot,
   setErrorText: (value: string) => void,
 ) {
   try {
     const config = parseBiomeConfig(state.importText)
-    storeSnapshot(createImportedSnapshot(state.snapshot, config))
+    storeSnapshot(createImportedSnapshot(state.snapshot, config), true)
     setErrorText('')
   } catch (error) {
     setErrorText(error instanceof Error ? error.message : 'Invalid config')
@@ -202,7 +203,7 @@ function resetReview(
 function toggleCategory(
   state: ReturnType<typeof buildReviewState>,
   category: RuleCategory,
-  storeSnapshot: (nextSnapshot: ReviewSnapshot) => void,
+  storeSnapshot: StoreReviewSnapshot,
 ) {
   storeSnapshot({
     ...state.snapshot,
@@ -214,7 +215,7 @@ function toggleCategory(
 function updatePanelVisibility(
   state: ReturnType<typeof buildReviewState>,
   visibilityPatch: Partial<NonNullable<ReviewSnapshot['panels']>>,
-  storeSnapshot: (nextSnapshot: ReviewSnapshot) => void,
+  storeSnapshot: StoreReviewSnapshot,
 ) {
   storeSnapshot({
     ...state.snapshot,
@@ -230,7 +231,7 @@ function saveRuleDecision(
   state: ReturnType<typeof buildReviewState>,
   rule: BiomeRule,
   decision: RuleChoice['decision'],
-  storeSnapshot: (nextSnapshot: ReviewSnapshot) => void,
+  storeSnapshot: StoreReviewSnapshot,
 ) {
   storeSnapshot({
     ...state.snapshot,
