@@ -109,6 +109,29 @@ describe('App', () => {
     expect(screen.getByRole('checkbox', { name: 'JavaScript' })).not.toBeChecked()
   })
 
+  it('shows a distinct state when every category filter is disabled', async () => {
+    render(<App />)
+
+    for (const checkbox of screen.getAllByRole('checkbox')) {
+      await userEvent.click(checkbox)
+    }
+
+    expect(screen.getByText('No categories')).toBeInTheDocument()
+    expect(screen.getByText('No categories selected.')).toBeInTheDocument()
+    expect(screen.queryByText('All rules reviewed.')).not.toBeInTheDocument()
+  })
+
+  it('announces invalid imported config errors', async () => {
+    render(<App />)
+
+    await userEvent.clear(screen.getByLabelText('Biome config input'))
+    await userEvent.click(screen.getByLabelText('Biome config input'))
+    await userEvent.paste('{ invalid json')
+    await userEvent.click(screen.getByRole('button', { name: 'Start from this config' }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Invalid biome config')
+  })
+
   it('requires modal confirmation before resetting review state', async () => {
     render(<App />)
 

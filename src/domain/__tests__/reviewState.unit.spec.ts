@@ -26,8 +26,8 @@ describe('getVisibleRuleWindow', () => {
 })
 
 describe('getProgressPercent', () => {
-  it('returns full progress for an empty deck', () => {
-    expect(getProgressPercent(0, 0)).toBe(100)
+  it('does not report completion for an empty filtered deck', () => {
+    expect(getProgressPercent(0, 0)).toBe(0)
   })
 
   it('caps progress at the total rule count', () => {
