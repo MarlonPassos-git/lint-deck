@@ -36,6 +36,14 @@ describe('App', () => {
     expect(document.querySelector('.docs-frame')).toBeInTheDocument()
   })
 
+  it('removes documentation iframes from the tab sequence', () => {
+    render(<App />)
+
+    for (const frame of document.querySelectorAll('.docs-frame')) {
+      expect(frame).toHaveAttribute('tabindex', '-1')
+    }
+  })
+
   it('saves a warn decision into the generated config', async () => {
     vi.stubGlobal('AudioContext', QuietAudioContext)
     render(<App />)
@@ -140,5 +148,32 @@ describe('App', () => {
     expect(screen.getByRole('dialog', { name: 'Reset review?' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Reset everything' })).toBeEnabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
+  })
+
+  it('uses semantic decision classes from the design system', () => {
+    render(<App />)
+
+    expect(screen.getByRole('button', { name: 'Ignore' })).toHaveClass('ignore-button')
+    expect(screen.getByRole('button', { name: 'Warn' })).toHaveClass('warn-button')
+    expect(screen.getByRole('button', { name: 'Error' })).toHaveClass('error-button')
+  })
+
+  it('names category controls for browser form diagnostics', () => {
+    render(<App />)
+
+    expect(screen.getByRole('checkbox', { name: 'HTML/ARIA' })).toHaveAttribute(
+      'id',
+      'category-html-aria',
+    )
+    for (const checkbox of screen.getAllByRole('checkbox')) {
+      expect(checkbox).toHaveAttribute('name', 'rule-category')
+    }
+  })
+
+  it('renders custom square category checkbox controls', () => {
+    render(<App />)
+
+    expect(document.querySelector('.category-check')).not.toBeInTheDocument()
+    expect(screen.getAllByRole('checkbox')).toHaveLength(6)
   })
 })
