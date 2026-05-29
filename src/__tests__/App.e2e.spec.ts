@@ -49,6 +49,13 @@ type MotionCostMetrics = {
   workspaceTransition: string
 }
 
+type PrefetchMetrics = {
+  iframeCount: number
+  preconnectCount: number
+  prefetchCount: number
+  queuedFrameVisibility: string[]
+}
+
 const expectedInitialTabOrder = [
   'JavaScript',
   'CSS',
@@ -252,6 +259,24 @@ async function getMotionCostMetrics(page: Page): Promise<MotionCostMetrics> {
   }))
 }
 
+async function getPrefetchMetrics(page: Page): Promise<PrefetchMetrics> {
+  return page.evaluate(() => ({
+    iframeCount: document.querySelectorAll('iframe.docs-frame').length,
+    preconnectCount: document.querySelectorAll(
+      'link[data-biome-rule-prefetch="true"][rel="preconnect"]',
+    ).length,
+    prefetchCount: document.querySelectorAll(
+      'link[data-biome-rule-prefetch="true"][rel="prefetch"][as="document"]',
+    ).length,
+    queuedFrameVisibility: Array.from(
+      document.querySelectorAll(
+        '.rule-frame.is-queued-next .docs-frame, .rule-frame.is-queued-after .docs-frame',
+      ),
+      (frame) => getComputedStyle(frame).visibility,
+    ),
+  }))
+}
+
 test('reviews a rule and shows generated config output', async ({ page }) => {
   await page.goto('/')
 
@@ -298,6 +323,16 @@ test('keeps panel toggles away from expensive iframe layout animations', async (
   const metrics = await getMotionCostMetrics(page)
   expect(metrics.workspaceTransition).not.toContain('grid-template-columns')
   expect(metrics.workspaceTransitionDuration).toBe('0s')
+  expect(metrics.queuedFrameVisibility).toEqual(['hidden', 'hidden'])
+})
+
+test('prefetches upcoming docs without adding rendered iframes', async ({ page }) => {
+  await page.goto('/')
+
+  const metrics = await getPrefetchMetrics(page)
+  expect(metrics.iframeCount).toBe(3)
+  expect(metrics.preconnectCount).toBe(1)
+  expect(metrics.prefetchCount).toBe(6)
   expect(metrics.queuedFrameVisibility).toEqual(['hidden', 'hidden'])
 })
 

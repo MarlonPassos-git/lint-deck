@@ -54,6 +54,16 @@ describe('App', () => {
     expect(document.querySelector('.rule-frame.is-queued-after')).toBeInTheDocument()
   })
 
+  it('prefetches upcoming documentation without mounting extra iframes', async () => {
+    render(<App />)
+
+    await waitFor(() => expect(getRuleDocPrefetchLinks()).toHaveLength(7))
+
+    expect(document.querySelectorAll('.docs-frame')).toHaveLength(3)
+    expect(getRuleDocPreconnectLink()).toHaveAttribute('href', 'https://biomejs.dev')
+    expect(getRuleDocDocumentLinks()[0]).toHaveAttribute('href', biomeRules[0].url)
+  })
+
   it('saves a warn decision into the generated config', async () => {
     vi.stubGlobal('AudioContext', QuietAudioContext)
     render(<App />)
@@ -61,6 +71,17 @@ describe('App', () => {
     await userEvent.click(screen.getByRole('button', { name: /warn/i }))
 
     expect(await screen.findByText(/"warn"/)).toBeInTheDocument()
+  })
+
+  it('advances prefetched documentation after a decision', async () => {
+    vi.stubGlobal('AudioContext', QuietAudioContext)
+    render(<App />)
+
+    await userEvent.click(screen.getByRole('button', { name: /warn/i }))
+
+    await waitFor(() =>
+      expect(getRuleDocDocumentLinks()[0]).toHaveAttribute('href', biomeRules[1].url),
+    )
   })
 
   it('marks the active rule with a decision animation before saving', async () => {
@@ -209,3 +230,17 @@ describe('App', () => {
     expect(screen.getAllByRole('checkbox')).toHaveLength(6)
   })
 })
+
+function getRuleDocPrefetchLinks() {
+  return Array.from(document.querySelectorAll('link[data-biome-rule-prefetch="true"]'))
+}
+
+function getRuleDocPreconnectLink() {
+  return document.querySelector('link[data-biome-rule-prefetch="true"][rel="preconnect"]')
+}
+
+function getRuleDocDocumentLinks() {
+  return Array.from(
+    document.querySelectorAll('link[data-biome-rule-prefetch="true"][rel="prefetch"]'),
+  )
+}
