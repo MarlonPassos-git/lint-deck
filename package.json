@@ -19,6 +19,7 @@
     "format": "biome format --write .",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:ct": "playwright test -c playwright-ct.config.ts",
     "test:e2e": "playwright test",
     "check": "pnpm lint && pnpm test && pnpm build"
   },
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",
+    "@playwright/experimental-ct-react": "1.60.0",
     "@playwright/test": "^1.60.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
