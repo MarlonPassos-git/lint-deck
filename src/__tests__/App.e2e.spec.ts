@@ -15,6 +15,7 @@ type DesignMetrics = {
   checkboxBackground: string
   checkboxBorderColor: string
   checkboxBorderRadius: string
+  checkboxCursor: string
   checkboxHeight: string
   decisionBarShadow: string
   errorBackground: string
@@ -113,6 +114,7 @@ async function getDesignMetrics(page: Page): Promise<DesignMetrics> {
       headerFontSize: headerStyle.fontSize,
       panelShadow: panelStyle.boxShadow,
       ruleCardRadius: ruleCardStyle.borderRadius,
+      checkboxCursor: checkboxStyle.cursor,
       ruleCardShadow: ruleCardStyle.boxShadow,
     }
   })
@@ -236,6 +238,7 @@ test('matches core neo-brutalist design tokens', async ({ page }) => {
   expect(metrics.checkboxBackground).toBe('rgb(211, 59, 83)')
   expect(metrics.checkboxBorderColor).toBe('rgb(211, 59, 83)')
   expect(metrics.checkboxBorderRadius).toBe('0px')
+  expect(metrics.checkboxCursor).toBe('pointer')
   expect(metrics.checkboxHeight).toBe('12px')
   expect(metrics.errorBackground).toBe('rgb(232, 93, 93)')
   expect(metrics.headerFontSize).toBe('34px')
