@@ -6,7 +6,7 @@ export function getVisibleRuleWindow(rules: BiomeRule[], currentIndex: number) {
 }
 
 export function getProgressPercent(totalRules: number, currentIndex: number) {
-  if (totalRules === 0) return 100
+  if (totalRules === 0) return 0
   return Math.round((Math.min(currentIndex, totalRules) / totalRules) * 100)
 }
 

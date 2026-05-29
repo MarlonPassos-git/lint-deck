@@ -70,6 +70,10 @@
   grid-template-columns: auto auto minmax(130px, 180px) auto;
 }
 
+.progress-block span {
+  white-space: nowrap;
+}
+
 .progress-block small {
   color: #4c463d;
   font:
@@ -426,5 +430,34 @@ button:disabled {
   .show-panel-button {
     min-height: 48px;
     writing-mode: horizontal-tb;
+  }
+}
+
+@media (max-width: 720px) {
+  .review-header {
+    align-items: start;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .category-filter {
+    justify-content: start;
+  }
+
+  .progress-block {
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    width: 100%;
+  }
+
+  .control-panel,
+  .output-panel {
+    box-shadow: 3px 3px 0 #151515;
+    padding: 14px;
+  }
+
+  .finished-stage,
+  .iframe-stack,
+  .rule-stage {
+    min-height: 560px;
   }
 }

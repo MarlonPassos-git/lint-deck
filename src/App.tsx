@@ -54,6 +54,7 @@ function App() {
   const outputText = formatBiomeConfig(buildBiomeConfig(baseConfig, snapshot.choices))
   const completedRules = getCompletedRuleCount(filteredRules.length, pendingRules.length, 0)
   const progress = getProgressPercent(filteredRules.length, completedRules)
+  const hasSelectedCategory = selectedCategories.length > 0
 
   const startReview = () => {
     try {
@@ -122,6 +123,7 @@ function App() {
     <main className="app-shell">
       <ReviewHeader
         completedRules={completedRules}
+        hasSelectedCategory={hasSelectedCategory}
         progress={progress}
         selectedCategories={selectedCategories}
         totalRules={filteredRules.length}
@@ -151,6 +153,7 @@ function App() {
         )}
         <RuleStage
           activeRule={activeRule}
+          hasSelectedCategory={hasSelectedCategory}
           rules={getVisibleRuleWindow(pendingRules, 0)}
           onChoose={chooseRule}
         />
@@ -179,6 +182,7 @@ function App() {
 
 function ReviewHeader({
   completedRules,
+  hasSelectedCategory,
   progress,
   selectedCategories,
   totalRules,
@@ -186,6 +190,7 @@ function ReviewHeader({
   onResetRequest,
 }: {
   completedRules: number
+  hasSelectedCategory: boolean
   progress: number
   selectedCategories: RuleCategory[]
   totalRules: number
@@ -200,7 +205,7 @@ function ReviewHeader({
       </div>
       <CategoryFilter selectedCategories={selectedCategories} onCategoryToggle={onCategoryToggle} />
       <div className="progress-block">
-        <span>{progress}%</span>
+        <span>{hasSelectedCategory ? `${progress}%` : 'No categories'}</span>
         <small>
           {completedRules}/{totalRules}
         </small>
@@ -296,7 +301,11 @@ function ImportPanel(props: {
         onChange={(event) => props.onChange(event.target.value)}
         spellCheck={false}
       />
-      {props.errorText ? <p className="error-text">{props.errorText}</p> : null}
+      {props.errorText ? (
+        <p className="error-text" role="alert">
+          {props.errorText}
+        </p>
+      ) : null}
       <button type="button" className="primary-button" onClick={props.onStart}>
         Start from this config
       </button>
@@ -306,9 +315,11 @@ function ImportPanel(props: {
 
 function RuleStage(props: {
   activeRule?: BiomeRule
+  hasSelectedCategory: boolean
   rules: BiomeRule[]
   onChoose: (decision: RuleChoice['decision']) => void
 }) {
+  if (!props.hasSelectedCategory) return <NoCategoriesStage />
   if (!props.activeRule) return <FinishedStage />
 
   return (
@@ -384,6 +395,16 @@ function OutputPanel({
       <p>{choices.length} decisions saved locally.</p>
       <pre>{outputText}</pre>
     </aside>
+  )
+}
+
+function NoCategoriesStage() {
+  return (
+    <section className="finished-stage">
+      <AlertTriangle size={44} />
+      <h2>No categories selected.</h2>
+      <p>Select at least one category to continue reviewing rules.</p>
+    </section>
   )
 }
 
