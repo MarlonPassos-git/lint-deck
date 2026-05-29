@@ -55,8 +55,19 @@ pnpm test:e2e
 - `src/domain/reviewState.ts`: progress/window/choice helpers.
 - `src/storage/localReviewStore.ts`: `localStorage` persistence.
 - `scripts/generate-biome-rules.mjs`: builds `biomeRules.ts` from `node_modules/@biomejs/biome/configuration_schema.json`.
+- `DESIGN.md`: visual identity tokens and Gumroad-inspired neo-brutalist design rules for UI work.
 - `biome.json`: Biome lint/format configuration.
 - `.github/workflows/ci.yml`: GitHub CI with pnpm, Biome, Vitest, build, and Playwright E2E.
+
+## Design System
+
+- Before changing layout, styling, component visuals, interaction surfaces, or design tokens, read `DESIGN.md` and follow its logic.
+- Preserve the Gumroad-inspired neo-brutalist devtool direction: hard black borders, offset shadows, warm paper surfaces, dense desktop workbench layout, and stable semantic decision colors.
+- If `DESIGN.md` changes, validate it with:
+
+```powershell
+npx -p @google/design.md designmd lint DESIGN.md
+```
 
 ## Biome Rule Catalog
 
