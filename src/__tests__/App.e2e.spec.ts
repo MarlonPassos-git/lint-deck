@@ -36,6 +36,19 @@ type HoverMetrics = {
   hoverTransform: string
 }
 
+type ProgressWidthMetrics = {
+  countWidthAfterCss: number
+  countWidthAfterJavaScript: number
+  valueWidthAfterCss: number
+  valueWidthAfterJavaScript: number
+}
+
+type MotionCostMetrics = {
+  workspaceTransitionDuration: string
+  queuedFrameVisibility: string[]
+  workspaceTransition: string
+}
+
 const expectedInitialTabOrder = [
   'JavaScript',
   'CSS',
@@ -108,13 +121,13 @@ async function getDesignMetrics(page: Page): Promise<DesignMetrics> {
       checkboxBackground: checkboxStyle.backgroundColor,
       checkboxBorderColor: checkboxStyle.borderColor,
       checkboxBorderRadius: checkboxStyle.borderRadius,
+      checkboxCursor: checkboxStyle.cursor,
       checkboxHeight: checkboxStyle.height,
       decisionBarShadow: decisionBarStyle.boxShadow,
       errorBackground: errorButtonStyle.backgroundColor,
       headerFontSize: headerStyle.fontSize,
       panelShadow: panelStyle.boxShadow,
       ruleCardRadius: ruleCardStyle.borderRadius,
-      checkboxCursor: checkboxStyle.cursor,
       ruleCardShadow: ruleCardStyle.boxShadow,
     }
   })
@@ -177,9 +190,11 @@ async function getHoverMetrics(page: Page): Promise<HoverMetrics> {
 async function collectKeyboardTabOrder(page: Page, tabPresses: number) {
   const focusedNames: string[] = []
 
-  for (let tabIndex = 0; tabIndex < tabPresses; tabIndex += 1) {
+  while (focusedNames.length < tabPresses) {
     await page.keyboard.press('Tab')
-    focusedNames.push(await getFocusedControlName(page))
+    const focusedName = await getFocusedControlName(page)
+    if (focusedName === '') continue
+    focusedNames.push(focusedName)
   }
 
   return focusedNames
@@ -190,11 +205,51 @@ async function getFocusedControlName(page: Page) {
     const focusedElement = document.activeElement
 
     if (!focusedElement) return ''
+    if (focusedElement === document.body) return ''
     if (focusedElement instanceof HTMLInputElement) {
       return focusedElement.labels?.[0]?.textContent?.trim() ?? ''
     }
     return focusedElement.getAttribute('aria-label') ?? focusedElement.textContent?.trim() ?? ''
   })
+}
+
+async function getProgressWidthMetrics(page: Page): Promise<ProgressWidthMetrics> {
+  const cssCheckbox = page.getByRole('checkbox', { name: 'CSS' })
+  const javaScriptCheckbox = page.getByRole('checkbox', { name: 'JavaScript' })
+
+  await cssCheckbox.click()
+  const valueWidthAfterCss = await getProgressElementWidth(page, '.progress-value')
+  const countWidthAfterCss = await getProgressElementWidth(page, '.progress-count')
+
+  await javaScriptCheckbox.click()
+  const valueWidthAfterJavaScript = await getProgressElementWidth(page, '.progress-value')
+  const countWidthAfterJavaScript = await getProgressElementWidth(page, '.progress-count')
+
+  return {
+    countWidthAfterCss,
+    countWidthAfterJavaScript,
+    valueWidthAfterCss,
+    valueWidthAfterJavaScript,
+  }
+}
+
+async function getProgressElementWidth(page: Page, selector: string) {
+  return page.locator(selector).evaluate((element) => element.getBoundingClientRect().width)
+}
+
+async function getMotionCostMetrics(page: Page): Promise<MotionCostMetrics> {
+  return page.evaluate(() => ({
+    queuedFrameVisibility: Array.from(
+      document.querySelectorAll(
+        '.rule-frame.is-queued-next .docs-frame, .rule-frame.is-queued-after .docs-frame',
+      ),
+      (frame) => getComputedStyle(frame).visibility,
+    ),
+    workspaceTransition: getComputedStyle(document.querySelector('.workspace') as Element)
+      .transition,
+    workspaceTransitionDuration: getComputedStyle(document.querySelector('.workspace') as Element)
+      .transitionDuration,
+  }))
 }
 
 test('reviews a rule and shows generated config output', async ({ page }) => {
@@ -227,6 +282,23 @@ test('keeps load and interactive review layout stable', async ({ page }) => {
   expect(metrics.overflowX).toBe(0)
   expect(metrics.domContentLoaded).toBeLessThan(1000)
   expect(metrics.loadEnd).toBeLessThan(2000)
+})
+
+test('keeps progress numbers stable across category digit changes', async ({ page }) => {
+  await page.goto('/')
+
+  const metrics = await getProgressWidthMetrics(page)
+  expect(metrics.valueWidthAfterCss).toBe(metrics.valueWidthAfterJavaScript)
+  expect(metrics.countWidthAfterCss).toBe(metrics.countWidthAfterJavaScript)
+})
+
+test('keeps panel toggles away from expensive iframe layout animations', async ({ page }) => {
+  await page.goto('/')
+
+  const metrics = await getMotionCostMetrics(page)
+  expect(metrics.workspaceTransition).not.toContain('grid-template-columns')
+  expect(metrics.workspaceTransitionDuration).toBe('0s')
+  expect(metrics.queuedFrameVisibility).toEqual(['hidden', 'hidden'])
 })
 
 test('matches core neo-brutalist design tokens', async ({ page }) => {

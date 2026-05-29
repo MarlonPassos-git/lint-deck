@@ -45,6 +45,15 @@ describe('App', () => {
     }
   })
 
+  it('keeps the mounted documentation window visible as a deck stack', () => {
+    render(<App />)
+
+    expect(document.querySelectorAll('.docs-frame')).toHaveLength(3)
+    expect(document.querySelector('.rule-frame.is-active')).toBeInTheDocument()
+    expect(document.querySelector('.rule-frame.is-queued-next')).toBeInTheDocument()
+    expect(document.querySelector('.rule-frame.is-queued-after')).toBeInTheDocument()
+  })
+
   it('saves a warn decision into the generated config', async () => {
     vi.stubGlobal('AudioContext', QuietAudioContext)
     render(<App />)
@@ -70,7 +79,7 @@ describe('App', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Hide output' }))
 
-    expect(screen.queryByText('Generated biome.json')).not.toBeInTheDocument()
+    expect(screen.getByText('Generated biome.json')).not.toBeVisible()
     expect(screen.getByRole('button', { name: 'Show biome.json' })).toBeInTheDocument()
 
     await userEvent.click(screen.getByRole('button', { name: 'Show biome.json' }))
@@ -78,12 +87,24 @@ describe('App', () => {
     expect(screen.getByText('Generated biome.json')).toBeInTheDocument()
   })
 
+  it('keeps side panel content mounted while hidden', async () => {
+    render(<App />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Hide base file' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Hide output' }))
+
+    expect(screen.getByLabelText('Biome config input')).toBeInTheDocument()
+    expect(screen.getByText('Generated biome.json')).toBeInTheDocument()
+    expect(screen.getByLabelText('Biome config input')).not.toBeVisible()
+    expect(screen.getByText('Generated biome.json')).not.toBeVisible()
+  })
+
   it('hides and restores the base file panel', async () => {
     render(<App />)
 
     await userEvent.click(screen.getByRole('button', { name: 'Hide base file' }))
 
-    expect(screen.queryByText('Base file')).not.toBeInTheDocument()
+    expect(screen.getByText('Base file')).not.toBeVisible()
     expect(screen.getByRole('button', { name: 'Show base file' })).toBeInTheDocument()
 
     await userEvent.click(screen.getByRole('button', { name: 'Show base file' }))

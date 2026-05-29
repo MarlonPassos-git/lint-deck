@@ -116,11 +116,23 @@
   white-space: nowrap;
 }
 
+.progress-value {
+  font-variant-numeric: tabular-nums;
+  min-width: 12ch;
+  text-align: right;
+}
+
 .progress-block small {
   color: #4c463d;
   font:
     800 12px / 1 "Trebuchet MS",
     sans-serif;
+}
+
+.progress-count {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  min-width: 8ch;
 }
 
 .progress-track {
@@ -142,7 +154,7 @@
   grid-template-columns: minmax(240px, 0.22fr) minmax(0, 1fr) minmax(300px, 0.28fr);
   margin: 0 auto;
   max-width: 2200px;
-  transition: grid-template-columns 360ms var(--motion-snap);
+  transition: none;
   width: 100%;
 }
 
@@ -156,6 +168,14 @@
 
 .workspace.is-input-hidden.is-output-hidden {
   grid-template-columns: 56px minmax(0, 1fr) 56px;
+}
+
+.panel-visibility-slot {
+  min-width: 0;
+}
+
+.panel-visibility-content {
+  height: 100%;
 }
 
 .control-panel,
@@ -312,6 +332,24 @@ button:disabled {
   z-index: 3;
 }
 
+.rule-frame.is-queued-next,
+.rule-frame.is-queued-after {
+  pointer-events: none;
+  visibility: visible;
+}
+
+.rule-frame.is-queued-next {
+  opacity: 0.32;
+  transform: translate(12px, 12px) rotate(1.2deg) scale(0.982);
+  z-index: 2;
+}
+
+.rule-frame.is-queued-after {
+  opacity: 0.16;
+  transform: translate(22px, 22px) rotate(2deg) scale(0.964);
+  z-index: 1;
+}
+
 .rule-frame.is-exiting {
   opacity: 0;
   pointer-events: none;
@@ -339,6 +377,11 @@ button:disabled {
   display: block;
   height: calc(100% - 62px);
   width: 100%;
+}
+
+.rule-frame.is-queued-next .docs-frame,
+.rule-frame.is-queued-after .docs-frame {
+  visibility: hidden;
 }
 
 .rule-meta {
@@ -494,6 +537,11 @@ button:disabled {
     box-shadow 240ms var(--motion-snap),
     transform 320ms var(--motion-snap);
   writing-mode: vertical-rl;
+}
+
+.panel-visibility-content[hidden],
+.show-panel-button[hidden] {
+  display: none;
 }
 
 .finished-stage {

@@ -1,4 +1,5 @@
 import { AlertTriangle, Eye, EyeOff, FileText, RotateCcw, ShieldCheck, X } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import './App.css'
 import { biomeRules } from './domain/biomeRules'
@@ -141,7 +142,12 @@ function App() {
         className={getWorkspaceClassName(isInputVisible, isOutputVisible)}
         aria-label="Rule review workspace"
       >
-        {isInputVisible ? (
+        <PanelVisibilitySlot
+          isVisible={isInputVisible}
+          revealLabel="Show base file"
+          side="input"
+          onShow={() => updatePanelVisibility({ inputVisible: true })}
+        >
           <ImportPanel
             errorText={errorText}
             importText={importText}
@@ -149,15 +155,7 @@ function App() {
             onHide={() => updatePanelVisibility({ inputVisible: false })}
             onStart={startReview}
           />
-        ) : (
-          <button
-            type="button"
-            className="show-panel-button"
-            onClick={() => updatePanelVisibility({ inputVisible: true })}
-          >
-            <Eye size={18} /> Show base file
-          </button>
-        )}
+        </PanelVisibilitySlot>
         <RuleStage
           activeRule={activeRule}
           hasSelectedCategory={hasSelectedCategory}
@@ -165,26 +163,48 @@ function App() {
           rules={getVisibleRuleWindow(pendingRules, 0)}
           onChoose={chooseRule}
         />
-        {isOutputVisible ? (
+        <PanelVisibilitySlot
+          isVisible={isOutputVisible}
+          revealLabel="Show biome.json"
+          side="output"
+          onShow={() => updatePanelVisibility({ outputVisible: true })}
+        >
           <OutputPanel
             outputText={outputText}
             choices={snapshot.choices}
             onHide={() => updatePanelVisibility({ outputVisible: false })}
           />
-        ) : (
-          <button
-            type="button"
-            className="show-panel-button"
-            onClick={() => updatePanelVisibility({ outputVisible: true })}
-          >
-            <Eye size={18} /> Show biome.json
-          </button>
-        )}
+        </PanelVisibilitySlot>
       </section>
       {isResetDialogOpen ? (
         <ResetDialog onCancel={() => setIsResetDialogOpen(false)} onConfirm={resetReview} />
       ) : null}
     </main>
+  )
+}
+
+function PanelVisibilitySlot({
+  children,
+  isVisible,
+  onShow,
+  revealLabel,
+  side,
+}: {
+  children: ReactNode
+  isVisible: boolean
+  onShow: () => void
+  revealLabel: string
+  side: 'input' | 'output'
+}) {
+  return (
+    <aside className={getPanelVisibilitySlotClassName(side, isVisible)}>
+      <div className="panel-visibility-content" hidden={!isVisible}>
+        {children}
+      </div>
+      <button type="button" className="show-panel-button" hidden={isVisible} onClick={onShow}>
+        <Eye size={18} /> {revealLabel}
+      </button>
+    </aside>
   )
 }
 
@@ -213,8 +233,10 @@ function ReviewHeader({
       </div>
       <CategoryFilter selectedCategories={selectedCategories} onCategoryToggle={onCategoryToggle} />
       <div className="progress-block">
-        <span>{hasSelectedCategory ? `${progress}%` : 'No categories'}</span>
-        <small>
+        <span className="progress-value">
+          {hasSelectedCategory ? `${progress}%` : 'No categories'}
+        </span>
+        <small className="progress-count">
           {completedRules}/{totalRules}
         </small>
         <div className="progress-track">
@@ -297,7 +319,7 @@ function ImportPanel(props: {
   onStart: () => void
 }) {
   return (
-    <aside className="control-panel">
+    <div className="control-panel">
       <div className="panel-title-row">
         <div>
           <FileText size={22} />
@@ -326,7 +348,7 @@ function ImportPanel(props: {
       <button type="button" className="primary-button" onClick={props.onStart}>
         Start from this config
       </button>
-    </aside>
+    </div>
   )
 }
 
@@ -349,6 +371,7 @@ function RuleStage(props: {
             decision={index === 0 ? props.outgoingDecision : null}
             isActive={index === 0}
             rule={rule}
+            stackIndex={index}
           />
         ))}
         <RuleActions outgoingDecision={props.outgoingDecision} onChoose={props.onChoose} />
@@ -361,14 +384,16 @@ function RuleFrame({
   decision,
   isActive,
   rule,
+  stackIndex,
 }: {
   decision: RuleChoice['decision'] | null
   isActive: boolean
   rule: BiomeRule
+  stackIndex: number
 }) {
   return (
     <article
-      className={getRuleFrameClassName(isActive, decision)}
+      className={getRuleFrameClassName(isActive, decision, stackIndex)}
       data-decision-label={decision ? getDecisionLabel(decision) : undefined}
     >
       <div className="rule-meta">
@@ -436,7 +461,7 @@ function OutputPanel({
   outputText: string
 }) {
   return (
-    <aside className="output-panel">
+    <div className="output-panel">
       <div className="panel-title-row">
         <h2>Generated biome.json</h2>
         <button
@@ -450,7 +475,7 @@ function OutputPanel({
       </div>
       <p>{choices.length} decisions saved locally.</p>
       <pre>{outputText}</pre>
-    </aside>
+    </div>
   )
 }
 
@@ -505,10 +530,26 @@ function getWorkspaceClassName(isInputVisible: boolean, isOutputVisible: boolean
     .join(' ')
 }
 
-function getRuleFrameClassName(isActive: boolean, decision: RuleChoice['decision'] | null) {
+function getPanelVisibilitySlotClassName(side: 'input' | 'output', isVisible: boolean) {
+  return [
+    'panel-visibility-slot',
+    `is-${side}-slot`,
+    isVisible ? 'is-panel-visible' : 'is-panel-hidden',
+  ]
+    .filter(Boolean)
+    .join(' ')
+}
+
+function getRuleFrameClassName(
+  isActive: boolean,
+  decision: RuleChoice['decision'] | null,
+  stackIndex: number,
+) {
   return [
     'rule-frame',
     isActive ? 'is-active' : '',
+    stackIndex === 1 ? 'is-queued-next' : '',
+    stackIndex === 2 ? 'is-queued-after' : '',
     decision ? 'is-exiting' : '',
     decision ? `is-exiting-${decision}` : '',
   ]
