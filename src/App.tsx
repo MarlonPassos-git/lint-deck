@@ -1,6 +1,6 @@
 import { AlertTriangle, Eye, EyeOff, FileText, RotateCcw, ShieldCheck, X } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { biomeRules } from './domain/biomeRules'
 import {
@@ -30,6 +30,8 @@ import {
 } from './storage/localReviewStore'
 
 const defaultInput = '{\n  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json"\n}\n'
+const ruleDocPrefetchLimit = 6
+const ruleDocPrefetchOrigin = 'https://biomejs.dev'
 
 function App() {
   const [snapshot, setSnapshot] = useState(() => loadInitialSnapshot())
@@ -52,11 +54,13 @@ function App() {
     () => getReviewableRules(filteredRules, baseConfig, snapshot.choices),
     [baseConfig, filteredRules, snapshot.choices],
   )
+  const prefetchRuleUrls = useMemo(() => getRuleDocPrefetchUrls(pendingRules), [pendingRules])
   const activeRule = pendingRules[0]
   const outputText = formatBiomeConfig(buildBiomeConfig(baseConfig, snapshot.choices))
   const completedRules = getCompletedRuleCount(filteredRules.length, pendingRules.length, 0)
   const progress = getProgressPercent(filteredRules.length, completedRules)
   const hasSelectedCategory = selectedCategories.length > 0
+  useRuleDocPrefetch(prefetchRuleUrls)
 
   const startReview = () => {
     try {
@@ -503,6 +507,39 @@ function loadInitialSnapshot(): ReviewSnapshot {
   return loadReviewSnapshot(window.localStorage) ?? createInitialSnapshot()
 }
 
+function useRuleDocPrefetch(ruleUrls: string[]) {
+  useEffect(() => {
+    removeRuleDocPrefetchLinks()
+    const links = [createRuleDocPreconnectLink(), ...ruleUrls.map(createRuleDocPrefetchLink)]
+    for (const link of links) document.head.append(link)
+    return removeRuleDocPrefetchLinks
+  }, [ruleUrls])
+}
+
+function removeRuleDocPrefetchLinks() {
+  for (const link of document.querySelectorAll('link[data-biome-rule-prefetch="true"]')) {
+    link.remove()
+  }
+}
+
+function createRuleDocPreconnectLink() {
+  const link = document.createElement('link')
+  link.rel = 'preconnect'
+  link.href = ruleDocPrefetchOrigin
+  link.crossOrigin = 'anonymous'
+  link.dataset.biomeRulePrefetch = 'true'
+  return link
+}
+
+function createRuleDocPrefetchLink(ruleUrl: string) {
+  const link = document.createElement('link')
+  link.rel = 'prefetch'
+  link.as = 'document'
+  link.href = ruleUrl
+  link.dataset.biomeRulePrefetch = 'true'
+  return link
+}
+
 function playClickTone(decision: RuleChoice['decision']) {
   const audioContext = new AudioContext()
   const oscillator = audioContext.createOscillator()
@@ -570,6 +607,10 @@ function getDecisionButtonClassName(
 function getDecisionLabel(decision: RuleChoice['decision']) {
   if (decision === 'ignored') return 'IGNORE'
   return decision.toUpperCase()
+}
+
+function getRuleDocPrefetchUrls(pendingRules: BiomeRule[]) {
+  return pendingRules.slice(0, ruleDocPrefetchLimit).map((rule) => rule.url)
 }
 
 function createInitialSnapshot(): ReviewSnapshot {
