@@ -1,73 +1,70 @@
-# React + TypeScript + Vite
+<div align="center">
+  <img src="public/favicon.svg" alt="Biome Rule Deck icon" width="96" height="96" />
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+  <h1>Biome Rule Deck</h1>
 
-Currently, two official plugins are available:
+  <p>Desktop React SPA for reviewing Biome lint rules and building a custom biome.json.</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+  <p>
+    <img alt="Version" src="https://img.shields.io/badge/version-0.0.0-111111" />
+    <img alt="Tests" src="https://img.shields.io/badge/tests-Vitest%20%2B%20Playwright-111111" />
+    <img alt="Quality" src="https://img.shields.io/badge/quality-Biome-111111" />
+    <img alt="License" src="https://img.shields.io/badge/license-UNLICENSED-111111" />
+  </p>
+</div>
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Review Biome linter rules with a card/deck workflow.
+- Import an existing `biome.json` and skip explicitly configured rules.
+- Choose `Ignore`, `Warn`, or `Error` for each remaining rule.
+- Keep three Biome documentation iframes mounted for faster navigation.
+- Filter the review deck by rule category.
+- Persist imported config, decisions, filters, progress, and panel visibility in `localStorage`.
+- Generate a final `biome.json` preview as decisions are made.
 
-## Expanding the ESLint configuration
+## Documentation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Project guidance: [AGENTS.md](AGENTS.md)
+- Contribution workflow: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Biome docs: [biomejs.dev](https://biomejs.dev)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Installation
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```powershell
+corepack enable
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Start the local app:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```powershell
+pnpm dev -- --host 127.0.0.1
 ```
+
+Open:
+
+```text
+http://127.0.0.1:5173
+```
+
+Run checks:
+
+```powershell
+pnpm lint
+pnpm test
+pnpm build
+pnpm test:e2e
+```
+
+Regenerate the Biome rule catalog after upgrading `@biomejs/biome`:
+
+```powershell
+node scripts/generate-biome-rules.mjs
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, branch workflow, test expectations, and pull request guidelines.

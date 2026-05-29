@@ -20,25 +20,29 @@ Core user flow:
 - Vite 8
 - TypeScript 6
 - Vitest + Testing Library
-- ESLint
+- Playwright for E2E tests
+- Biome for linting and formatting
 - `@biomejs/biome` is used as the source for the official configuration schema.
 - `lucide-react` provides icons.
 
 ## Commands
 
-- Install: `npm install`
-- Run dev server: `npm run dev -- --host 127.0.0.1`
-- Test: `npm run test`
-- Lint: `npm run lint`
-- Build: `npm run build`
+- Install: `pnpm install`
+- Run dev server: `pnpm dev -- --host 127.0.0.1`
+- Test: `pnpm test`
+- E2E: `pnpm test:e2e`
+- Lint: `pnpm lint`
+- Format/fix: `pnpm lint:fix`
+- Build: `pnpm build`
 - Regenerate rule catalog: `node scripts/generate-biome-rules.mjs`
 
 Before finishing behavior changes, run:
 
 ```powershell
-npm run test
-npm run lint
-npm run build
+pnpm test
+pnpm lint
+pnpm build
+pnpm test:e2e
 ```
 
 ## Important Files
@@ -51,6 +55,8 @@ npm run build
 - `src/domain/reviewState.ts`: progress/window/choice helpers.
 - `src/storage/localReviewStore.ts`: `localStorage` persistence.
 - `scripts/generate-biome-rules.mjs`: builds `biomeRules.ts` from `node_modules/@biomejs/biome/configuration_schema.json`.
+- `biome.json`: Biome lint/format configuration.
+- `.github/workflows/ci.yml`: GitHub CI with pnpm, Biome, Vitest, build, and Playwright E2E.
 
 ## Biome Rule Catalog
 
@@ -142,6 +148,7 @@ Handle corrupt stored JSON by clearing the key and returning `null`.
 
 - Use project tooling.
 - Do not discuss style beyond lint/test/build output.
+- Biome is the formatter and linter. Do not reintroduce ESLint unless explicitly requested.
 
 ## Logging
 
@@ -164,6 +171,14 @@ Useful checks:
 - Category filters survive reload and update progress.
 - No unwanted horizontal overflow.
 
+## Package Manager
+
+Use pnpm only.
+
+- Do not create `package-lock.json` or `yarn.lock`.
+- Keep `packageManager` pinned in `package.json`.
+- CI uses `pnpm install --frozen-lockfile`.
+
 ## Git
 
 Use `rtk git ...` for git commands when committing from Codex.
@@ -176,4 +191,3 @@ Commit messages use Conventional Commits:
 - `docs`
 - `refactor`
 - `chore`
-
