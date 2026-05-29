@@ -33,7 +33,7 @@ describe('App', () => {
     expect(screen.getByText('Generated biome.json')).toBeInTheDocument()
     expect(screen.getByText(`0/${biomeRules.length}`)).toBeInTheDocument()
     expect(screen.getByLabelText('Rule categories')).toBeInTheDocument()
-    expect(document.querySelector('.docs-frame-crop .docs-frame')).toBeInTheDocument()
+    expect(document.querySelector('.docs-frame')).toBeInTheDocument()
   })
 
   it('saves a warn decision into the generated config', async () => {
@@ -107,5 +107,15 @@ describe('App', () => {
     await userEvent.click(screen.getByRole('checkbox', { name: 'JavaScript' }))
 
     expect(screen.getByRole('checkbox', { name: 'JavaScript' })).not.toBeChecked()
+  })
+
+  it('requires modal confirmation before resetting review state', async () => {
+    render(<App />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Reset review' }))
+
+    expect(screen.getByRole('dialog', { name: 'Reset review?' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Reset everything' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
   })
 })

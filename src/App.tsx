@@ -28,6 +28,7 @@ function App() {
   const [snapshot, setSnapshot] = useState(() => loadInitialSnapshot())
   const [importText, setImportText] = useState(snapshot.baseConfigText)
   const [errorText, setErrorText] = useState('')
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)
   const isInputVisible = snapshot.panels?.inputVisible ?? true
   const isOutputVisible = snapshot.panels?.outputVisible ?? true
   const selectedCategories = useMemo(
@@ -82,6 +83,7 @@ function App() {
     clearReviewSnapshot(window.localStorage)
     setImportText(defaultInput)
     setErrorText('')
+    setIsResetDialogOpen(false)
     setSnapshot(createInitialSnapshot())
   }
 
@@ -120,7 +122,7 @@ function App() {
         selectedCategories={selectedCategories}
         totalRules={filteredRules.length}
         onCategoryToggle={toggleCategory}
-        onReset={resetReview}
+        onResetRequest={() => setIsResetDialogOpen(true)}
       />
       <section className={getWorkspaceClassName(isInputVisible, isOutputVisible)} aria-label="Rule review workspace">
         {isInputVisible ? (
@@ -161,6 +163,12 @@ function App() {
           </button>
         )}
       </section>
+      {isResetDialogOpen ? (
+        <ResetDialog
+          onCancel={() => setIsResetDialogOpen(false)}
+          onConfirm={resetReview}
+        />
+      ) : null}
     </main>
   )
 }
@@ -171,14 +179,14 @@ function ReviewHeader({
   selectedCategories,
   totalRules,
   onCategoryToggle,
-  onReset,
+  onResetRequest,
 }: {
   completedRules: number
   progress: number
   selectedCategories: RuleCategory[]
   totalRules: number
   onCategoryToggle: (category: RuleCategory) => void
-  onReset: () => void
+  onResetRequest: () => void
 }) {
   return (
     <header className="review-header">
@@ -198,11 +206,36 @@ function ReviewHeader({
         <div className="progress-track">
           <div style={{ width: `${progress}%` }} />
         </div>
-        <button type="button" className="icon-button" onClick={onReset} aria-label="Reset review">
+        <button type="button" className="icon-button" onClick={onResetRequest} aria-label="Reset review">
           <RotateCcw size={18} />
         </button>
       </div>
     </header>
+  )
+}
+
+function ResetDialog({
+  onCancel,
+  onConfirm,
+}: {
+  onCancel: () => void
+  onConfirm: () => void
+}) {
+  return (
+    <div className="dialog-backdrop" role="presentation">
+      <section className="reset-dialog" role="dialog" aria-modal="true" aria-labelledby="reset-title">
+        <h2 id="reset-title">Reset review?</h2>
+        <p>This clears imported config, decisions, progress, filters, and hidden panel state.</p>
+        <div className="dialog-actions">
+          <button type="button" className="danger-button" onClick={onCancel}>
+            Cancel
+          </button>
+          <button type="button" className="success-button" onClick={onConfirm}>
+            Reset everything
+          </button>
+        </div>
+      </section>
+    </div>
   )
 }
 
@@ -290,14 +323,7 @@ function RuleFrame({ isActive, rule }: { isActive: boolean; rule: BiomeRule }) {
         </div>
         <p>{rule.summary}</p>
       </div>
-      <div className="docs-frame-crop">
-        <iframe
-          className="docs-frame"
-          title={`${rule.name} documentation`}
-          src={rule.url}
-          loading="eager"
-        />
-      </div>
+      <iframe className="docs-frame" title={`${rule.name} documentation`} src={rule.url} loading="eager" />
     </article>
   )
 }
