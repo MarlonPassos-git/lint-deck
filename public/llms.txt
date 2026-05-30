@@ -1,0 +1,15 @@
+# Lint Deck
+
+> Desktop Biome rule review app for generating custom biome.json lint configurations.
+
+Lint Deck helps developers import an existing Biome config, skip explicitly configured rules, review the remaining linter rules in a focused deck, and export a generated biome.json.
+
+## Links
+
+- Site: https://rule-deck.marlonpassos.com.br/
+- Source: https://github.com/MarlonPassos-git/lint-deck
+- Biome: https://biomejs.dev/
+
+## Topics
+
+Biome, lint rules, biome.json, React, Vite, TypeScript, developer tools.
