@@ -35,7 +35,7 @@ Not tested: full Playwright E2E suite, production build, exhaustive keyboard tra
 
 ### Page load
 - Status: PASS
-- Notes: App rendered `Rule config deck`, filters, review card, decision buttons, and generated config.
+- Notes: App rendered `Lint Forge`, filters, review card, decision buttons, and generated config.
 
 ### Core flow
 - Status: PASS

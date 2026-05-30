@@ -18,7 +18,7 @@ describe('ReviewHeader', () => {
       />,
     )
 
-    expect(screen.getByRole('heading', { name: 'Rule config deck' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Lint Forge' })).toBeInTheDocument()
     expect(screen.getByText(/not an official Biome tool/i)).toBeInTheDocument()
     expect(screen.getByText('25%')).toBeInTheDocument()
     expect(screen.getByText('2/8')).toBeInTheDocument()

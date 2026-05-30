@@ -14,7 +14,7 @@ describe('App review flow', () => {
   it('renders the review deck with generated output', () => {
     render(<App />)
 
-    expect(screen.getByRole('heading', { name: 'Rule config deck' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Lint Forge' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Generated biome.json' })).toBeInTheDocument()
     expect(screen.getByText(`0/${biomeRules.length}`)).toBeInTheDocument()
     expect(screen.getByRole('group', { name: 'Rule categories' })).toBeInTheDocument()

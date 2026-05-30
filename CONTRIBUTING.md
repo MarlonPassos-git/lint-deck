@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="public/favicon.svg" alt="Biome Rule Deck icon" width="72" height="72" />
+  <img src="public/favicon.svg" alt="Lint Forge icon" width="72" height="72" />
 
-  <h1>Contributing to Biome Rule Deck</h1>
+  <h1>Contributing to Lint Forge</h1>
 
   <p>Keep the review workflow fast, predictable, and easy to validate.</p>
 </div>

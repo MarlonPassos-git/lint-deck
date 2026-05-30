@@ -47,7 +47,7 @@ test('keeps panel toggles usable without horizontal overflow', async ({ page }) 
 
   await expect(page.getByRole('button', { name: 'Show base file' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Show biome.json' })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Rule config deck' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Lint Forge' })).toBeVisible()
   expect(await getHorizontalOverflow(page)).toBe(0)
 })
 
@@ -55,7 +55,7 @@ test('keeps mobile review layout free of horizontal overflow', async ({ page }) 
   await page.setViewportSize({ height: 900, width: 390 })
   await page.goto('/')
 
-  await expect(page.getByRole('heading', { name: 'Rule config deck' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Lint Forge' })).toBeVisible()
   expect(await getHorizontalOverflow(page)).toBe(0)
 })
 

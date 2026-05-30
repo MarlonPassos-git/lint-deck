@@ -1,7 +1,7 @@
-# Lint Deck
+# Lint Forge
 
 <div align="center">
-  <img src="public/favicon.svg" alt="Lint Deck icon" width="96" height="96" />
+  <img src="public/favicon.svg" alt="Lint Forge icon" width="96" height="96" />
 
   <p>Desktop React SPA for reviewing lint rules and building custom linter configs.</p>
 
@@ -13,9 +13,9 @@
   </p>
 </div>
 
-Lint Deck is a Biome rule review app for developers who want a custom `biome.json` without reading every lint rule page manually. Import an existing Biome config, skip rules already configured by your team, review the remaining rules as a deck, and export the generated config.
+Lint Forge is a Biome rule review app for developers who want a custom `biome.json` without reading every lint rule page manually. Import an existing Biome config, skip rules already configured by your team, review the remaining rules as a deck, and export the generated config.
 
-> Project note: Lint Deck is for Biome configs. It is an independent project, not an official Biome tool.
+> Project note: Lint Forge is for Biome configs. It is an independent project, not an official Biome tool.
 
 ## Features
 
@@ -29,8 +29,8 @@ Lint Deck is a Biome rule review app for developers who want a custom `biome.jso
 
 ## Demo
 
-- Live app: [rule-deck.marlonpassos.com.br](https://rule-deck.marlonpassos.com.br/)
-- Source: [github.com/MarlonPassos-git/lint-deck](https://github.com/MarlonPassos-git/lint-deck)
+- Live app: [lint-forge.marlonpassos.com.br](https://lint-forge.marlonpassos.com.br/)
+- Source: [github.com/MarlonPassos-git/lint-forge](https://github.com/MarlonPassos-git/lint-forge)
 
 ## Getting Started
 

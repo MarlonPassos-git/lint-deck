@@ -1,5 +1,5 @@
 {
-  "name": "lint-deck",
+  "name": "lint-forge",
   "private": true,
   "version": "0.0.0",
   "description": "Desktop React SPA for reviewing lint rules and building custom linter configs.",

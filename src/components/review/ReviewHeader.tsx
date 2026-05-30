@@ -16,8 +16,8 @@ export function ReviewHeader(props: ReviewHeaderProps) {
   return (
     <header className="review-header">
       <div>
-        <p className="eyebrow">Biome rule deck</p>
-        <h1>Rule config deck</h1>
+        <p className="eyebrow">Lint Forge</p>
+        <h1>Lint Forge</h1>
         <p className="project-note">
           For Biome configs. Independent project, not an official Biome tool.
         </p>

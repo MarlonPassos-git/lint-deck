@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible Lint Deck problem.
+description: Report a reproducible Lint Forge problem.
 title: "fix: "
 labels: ["bug"]
 body:
