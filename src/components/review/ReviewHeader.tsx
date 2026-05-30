@@ -18,6 +18,9 @@ export function ReviewHeader(props: ReviewHeaderProps) {
       <div>
         <p className="eyebrow">Biome rule deck</p>
         <h1>Rule config deck</h1>
+        <p className="project-note">
+          For Biome configs. Independent project, not an official Biome tool.
+        </p>
       </div>
       <CategoryFilter
         selectedCategories={props.selectedCategories}
