@@ -23,8 +23,21 @@ pnpm install
 
 ## Development
 
+Start the local app:
+
 ```powershell
 pnpm dev -- --host 127.0.0.1
+```
+
+Open:
+
+```text
+http://127.0.0.1:5173
+```
+
+Run local development checks:
+
+```powershell
 pnpm lint
 pnpm lint:fix
 pnpm test

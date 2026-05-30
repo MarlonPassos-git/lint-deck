@@ -1,0 +1,36 @@
+name: Bug report
+description: Report a reproducible Lint Deck problem.
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What happened, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction
+      description: List the smallest steps that trigger the bug.
+      placeholder: |
+        1. Open the app
+        2. Import this biome.json
+        3. Choose this rule decision
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: Biome config
+      description: Paste the smallest relevant biome.json snippet.
+      render: json
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: "Chrome 126 on Windows 11"
+    validations:
+      required: true

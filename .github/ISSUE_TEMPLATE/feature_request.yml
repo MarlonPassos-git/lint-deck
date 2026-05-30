@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest an improvement to the rule review workflow.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow
+      description: What review or config-generation workflow should improve?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the result a user should get.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Any workaround or alternative design considered?

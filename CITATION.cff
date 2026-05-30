@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use Lint Deck, cite the repository."
+title: "Lint Deck"
+type: software
+authors:
+  - family-names: "Passos"
+    given-names: "Marlon"
+repository-code: "https://github.com/MarlonPassos-git/lint-deck"
+url: "https://rule-deck.marlonpassos.com.br/"
+license: MIT

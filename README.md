@@ -1,7 +1,7 @@
+# Lint Deck
+
 <div align="center">
   <img src="public/favicon.svg" alt="Lint Deck icon" width="96" height="96" />
-
-  <h1>Lint Deck</h1>
 
   <p>Desktop React SPA for reviewing lint rules and building custom linter configs.</p>
 
@@ -9,9 +9,13 @@
     <img alt="Version" src="https://img.shields.io/badge/version-0.0.0-111111" />
     <img alt="Tests" src="https://img.shields.io/badge/tests-Vitest%20%2B%20Playwright-111111" />
     <img alt="Quality" src="https://img.shields.io/badge/quality-Biome-111111" />
-    <img alt="License" src="https://img.shields.io/badge/license-UNLICENSED-111111" />
+    <img alt="License" src="https://img.shields.io/badge/license-MIT-111111" />
   </p>
 </div>
+
+Lint Deck is a Biome rule review app for developers who want a custom `biome.json` without reading every lint rule page manually. Import an existing Biome config, skip rules already configured by your team, review the remaining rules as a deck, and export the generated config.
+
+> Project note: Lint Deck is for Biome configs. It is an independent project, not an official Biome tool.
 
 ## Features
 
@@ -23,47 +27,21 @@
 - Persist imported config, decisions, filters, progress, and panel visibility in `localStorage`.
 - Generate a final `biome.json` preview as decisions are made.
 
-## Documentation
+## Demo
 
-- Project guidance: [AGENTS.md](AGENTS.md)
-- Contribution workflow: [CONTRIBUTING.md](CONTRIBUTING.md)
-- Biome docs: [biomejs.dev](https://biomejs.dev)
+- Live app: [rule-deck.marlonpassos.com.br](https://rule-deck.marlonpassos.com.br/)
+- Source: [github.com/MarlonPassos-git/lint-deck](https://github.com/MarlonPassos-git/lint-deck)
 
-## Installation
+## Getting Started
 
-```powershell
-corepack enable
-pnpm install
-```
+Open the public app and use the review flow:
 
-## Usage
+1. Paste an existing `biome.json` in the base file panel.
+2. Start the review so explicitly configured rules are skipped.
+3. Choose `Off`, `Info`, `Warn`, or `Error` for each remaining rule.
+4. Copy the generated `biome.json` from the output panel.
 
-Start the local app:
-
-```powershell
-pnpm dev -- --host 127.0.0.1
-```
-
-Open:
-
-```text
-http://127.0.0.1:5173
-```
-
-Run checks:
-
-```powershell
-pnpm lint
-pnpm test
-pnpm build
-pnpm test:e2e
-```
-
-Regenerate the Biome rule catalog after upgrading `@biomejs/biome`:
-
-```powershell
-node scripts/generate-biome-rules.mjs
-```
+To run the project locally, follow the [Contributing guide](CONTRIBUTING.md#getting-started).
 
 ## Contributing
 
